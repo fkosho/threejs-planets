@@ -1,0 +1,10 @@
+# built products directory
+dist/
+
+# modules
+node_modules/
+
+# config file
+
+# others
+readme.md
