@@ -120,7 +120,10 @@ let destinationAngle = 0
 
 window.addEventListener('click', () =>
 {
-    destinationAngle = currentAngle + Math.PI / 2
+    // if(destinationAngle == currentAngle)
+    // {
+        destinationAngle = currentAngle + Math.round(Math.PI / 2 * 100000) / 100000
+    // }
 })
 
 
@@ -128,16 +131,18 @@ window.addEventListener('click', () =>
  * Animate
  */
 const clock = new THREE.Clock()
+let currentTime = 0
 
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+    const deltaTime = elapsedTime - currentTime
+    currentTime = elapsedTime
 
     // Animate Rotation
     if(currentAngle < destinationAngle)
     {
         currentAngle += Math.PI / 100
-        console.log(destinationAngle)
     }
 
     camera.position.x = Math.sin(currentAngle) * 9
@@ -145,6 +150,7 @@ const tick = () =>
 
     camera.lookAt(new THREE.Vector3(0, 0, 0))
 
+    console.log(destinationAngle, currentAngle)
 
     // Render
     renderer.render(scene, camera)

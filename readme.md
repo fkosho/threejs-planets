@@ -1,5 +1,5 @@
 # Planets
-This repository is one of my portfolios.
+This is my portfolio.
 
 ## Setup
 It supposes that you've already installed Node.js.
