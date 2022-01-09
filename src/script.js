@@ -21,11 +21,16 @@ const scene = new THREE.Scene()
  */
 const textureLoader = new THREE.TextureLoader()
 
+const planetTexture = textureLoader.load('/textures/particles/11.png')
+
 /**
  * Test meshes
  */
 // Material
-const material = new THREE.MeshStandardMaterial({ color: '#ffffff' })
+const material = new THREE.MeshStandardMaterial({ 
+    map: planetTexture,
+    color: '#ffffff'
+})
 
 // floor
 const floor = new THREE.Mesh(
@@ -150,7 +155,7 @@ const tick = () =>
 
     camera.lookAt(new THREE.Vector3(0, 0, 0))
 
-    console.log(destinationAngle, currentAngle)
+    // console.log(destinationAngle, currentAngle)
 
     // Render
     renderer.render(scene, camera)
