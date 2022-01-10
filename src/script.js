@@ -2,7 +2,7 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
-import { MeshStandardMaterial, Vector3 } from 'three'
+import { CubeTextureLoader, MeshStandardMaterial, Vector3 } from 'three'
 
 /**
  * Base
@@ -19,22 +19,52 @@ const scene = new THREE.Scene()
 /**
  * Textures
  */
+// Loader
 const textureLoader = new THREE.TextureLoader()
+const cubeTextureLoader = new THREE.CubeTextureLoader()
 
 const planetTexture = textureLoader.load('/textures/particles/11.png')
 
 // water
 const waterColorTexture = textureLoader.load('/textures/water_droplets/Water_Droplets_001_basecolor.jpg')
 const waterNormalTexture = textureLoader.load('/textures/water_droplets/Water_Droplets_001_normal.jpg')
+const waterAmbientOcclusionTexture = textureLoader.load('/textures/water_droplets/Water_Droplets_001_ambientOcclusion.jpg')
 const waterHeightTexture = textureLoader.load('/textures/water_droplets/Water_Droplets_001_height.png')
 const waterAlphaTexture = textureLoader.load('/textures/water_droplets/Water_Droplets_001_mask.jpg')
-// const waterNormalTexture = textureLoader.load('/textures/water_droplets/Water_Droplets_001_normal.jpg')
+const waterRoughnessTexture = textureLoader.load('/textures/water_droplets/Water_Droplets_001_roughness.jpg')
+
+
+/**
+ * Update all materials
+ */
+const updateAllMaterials = () =>
+{
+    scene.traverse((child) =>
+    {
+        console.log(child)
+    })
+}
+
+
+/**
+ * Environment map
+ */
+const environmentMap = cubeTextureLoader.load([
+    'textures/environmentMaps/rathaus_night/px.png',
+    'textures/environmentMaps/rathaus_night/nx.png',
+    'textures/environmentMaps/rathaus_night/py.png',
+    'textures/environmentMaps/rathaus_night/ny.png',
+    'textures/environmentMaps/rathaus_night/pz.png',
+    'textures/environmentMaps/rathaus_night/nz.png',
+])
+
+scene.background = environmentMap
 
 /**
  * Test meshes
  */
 // Material
-const material = new THREE.MeshStandardMaterial({ 
+const sampleMaterial = new THREE.MeshStandardMaterial({ 
     map: planetTexture,
     color: '#ffffff'
 })
@@ -42,24 +72,18 @@ const material = new THREE.MeshStandardMaterial({
 const waterMaterial = new THREE.MeshStandardMaterial({
     map: waterColorTexture,
     normalMap: waterNormalTexture,
-    height: waterHeightTexture,
+    displacementMap: waterHeightTexture,
+    aoMap: waterAmbientOcclusionTexture,
     alphaMap: waterAlphaTexture,
-    transparent: true
+    transparent: true,
+    roughnessMap: waterRoughnessTexture,
+    envMap: environmentMap
 })
-
-// floor
-const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(20, 20, 4, 4),
-    material
-)
-scene.add(floor)
-floor.rotation.x = - Math.PI / 2
-floor.position.y = - 3
 
 // cube
 const cube = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
-    material
+    sampleMaterial
 )
 scene.add(cube)
 cube.position.set(0, 0, 0)
@@ -130,6 +154,7 @@ const renderer = new THREE.WebGLRenderer({
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+renderer.outputEncoding = THREE.sRGBEncoding
 
 /**
  * Events
