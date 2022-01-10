@@ -23,6 +23,13 @@ const textureLoader = new THREE.TextureLoader()
 
 const planetTexture = textureLoader.load('/textures/particles/11.png')
 
+// water
+const waterColorTexture = textureLoader.load('/textures/water_droplets/Water_Droplets_001_basecolor.jpg')
+const waterNormalTexture = textureLoader.load('/textures/water_droplets/Water_Droplets_001_normal.jpg')
+const waterHeightTexture = textureLoader.load('/textures/water_droplets/Water_Droplets_001_height.png')
+const waterAlphaTexture = textureLoader.load('/textures/water_droplets/Water_Droplets_001_mask.jpg')
+// const waterNormalTexture = textureLoader.load('/textures/water_droplets/Water_Droplets_001_normal.jpg')
+
 /**
  * Test meshes
  */
@@ -30,6 +37,14 @@ const planetTexture = textureLoader.load('/textures/particles/11.png')
 const material = new THREE.MeshStandardMaterial({ 
     map: planetTexture,
     color: '#ffffff'
+})
+
+const waterMaterial = new THREE.MeshStandardMaterial({
+    map: waterColorTexture,
+    normalMap: waterNormalTexture,
+    height: waterHeightTexture,
+    alphaMap: waterAlphaTexture,
+    transparent: true
 })
 
 // floor
@@ -52,7 +67,7 @@ cube.position.set(0, 0, 0)
 // sphere
 const sphere = new THREE.Mesh(
     new THREE.SphereGeometry(1, 32, 32),
-    material
+    waterMaterial
 )
 scene.add(sphere)
 sphere.position.set(0, 0, - 5)
@@ -60,7 +75,7 @@ sphere.position.set(0, 0, - 5)
 // torus
 const torus = new THREE.Mesh(
     new THREE.TorusGeometry(1, 0.3, 32, 32),
-    material
+    waterMaterial
 )
 scene.add(torus)
 torus.position.set(0, 0, 5)
