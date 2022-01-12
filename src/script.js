@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
 import { CubeTextureLoader, MeshStandardMaterial, Vector3 } from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 /**
  * Base
@@ -15,6 +16,11 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+
+/**
+ * Loaders
+ */
+const gltfLoader = new GLTFLoader()
 
 /**
  * Textures
@@ -104,6 +110,30 @@ const torus = new THREE.Mesh(
 scene.add(torus)
 torus.position.set(0, 0, 5)
 
+/**
+ * Planets
+ */
+
+/**
+ * Saturn
+ */
+ gltfLoader.load(
+    '/models/planets/saturn.glb',
+    (gltf) =>
+    {
+        console.log(gltf)
+        const saturnSphereMesh = gltf.scene.children[3]
+        const saturnRingMesh = gltf.scene.children[2]
+
+        const saturnScale = 0.02
+
+        saturnSphereMesh.scale.set(saturnScale, saturnScale, saturnScale)
+        saturnRingMesh.scale.set(saturnScale, saturnScale, saturnScale)
+
+
+        scene.add(saturnSphereMesh, saturnRingMesh)
+    }
+)
 
 /**
  * Sizes
