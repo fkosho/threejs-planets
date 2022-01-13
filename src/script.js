@@ -69,6 +69,8 @@ scene.background = environmentMap
 /**
  * Test meshes
  */
+const planetsScale = 0.02
+
 // Material
 const sampleMaterial = new THREE.MeshStandardMaterial({ 
     map: planetTexture,
@@ -121,17 +123,12 @@ torus.position.set(0, 0, 5)
     '/models/planets/saturn.glb',
     (gltf) =>
     {
-        console.log(gltf)
-        const saturnSphereMesh = gltf.scene.children[3]
-        const saturnRingMesh = gltf.scene.children[2]
+        const saturnGroup = gltf.scene
 
-        const saturnScale = 0.02
+        saturnGroup.scale.set(planetsScale, planetsScale, planetsScale)
+        saturnGroup.position.set(10, 0, 0)
 
-        saturnSphereMesh.scale.set(saturnScale, saturnScale, saturnScale)
-        saturnRingMesh.scale.set(saturnScale, saturnScale, saturnScale)
-
-
-        scene.add(saturnSphereMesh, saturnRingMesh)
+        scene.add(saturnGroup)
     }
 )
 
@@ -163,7 +160,7 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(0, 1, 3)
+camera.position.set(0, 5, 15)
 scene.add(camera)
 
 
