@@ -218,6 +218,7 @@ const tick = () =>
     }
 
     camera.position.x = Math.sin(currentAngle) * 9
+    camera.position.y = Math.sin(currentAngle) * 2
     camera.position.z = Math.cos(currentAngle) * 9
 
     camera.lookAt(new THREE.Vector3(0, 0, 0))
