@@ -2,7 +2,7 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
-import { CubeTextureLoader, MeshStandardMaterial, Vector3 } from 'three'
+import { CubeTextureLoader, Group, MeshStandardMaterial, Vector3 } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 /**
@@ -16,6 +16,15 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+
+/**
+ * Parameters
+ */
+const parameters = {
+    // saturn
+    saturnRevolutionSpeed: 0.1,
+    saturnRevolutionRadius: 20
+}
 
 /**
  * Loaders
@@ -115,20 +124,24 @@ torus.position.set(0, 0, 5)
 /**
  * Planets
  */
+let planetGrouop = new THREE.Group()
+scene.add(planetGrouop)
 
 /**
  * Saturn
  */
- gltfLoader.load(
+let saturnGroup = null
+
+gltfLoader.load(
     '/models/planets/saturn.glb',
     (gltf) =>
     {
-        const saturnGroup = gltf.scene
+        saturnGroup = gltf.scene
 
         saturnGroup.scale.set(planetsScale, planetsScale, planetsScale)
         saturnGroup.position.set(10, 0, 0)
 
-        scene.add(saturnGroup)
+        planetGrouop.add(saturnGroup)
     }
 )
 
@@ -162,6 +175,8 @@ window.addEventListener('resize', () =>
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.set(0, 5, 15)
 scene.add(camera)
+
+
 
 
 
@@ -217,9 +232,18 @@ const tick = () =>
         currentAngle += Math.PI / 100
     }
 
-    camera.position.x = Math.sin(currentAngle) * 9
-    camera.position.y = Math.sin(currentAngle) * 2
-    camera.position.z = Math.cos(currentAngle) * 9
+    // Rotate planets
+    if(saturnGroup != null) {
+        revolvePlanet(saturnGroup, parameters.saturnRevolutionSpeed, parameters.saturnRevolutionRadius, elapsedTime)
+    }
+    
+
+    // Rotate camera position
+    if(saturnGroup != null) {
+        camera.position.x = saturnGroup.position.x * 1.4
+        camera.position.y = 1.2
+        camera.position.z = saturnGroup.position.z * 1.4  
+    }
 
     camera.lookAt(new THREE.Vector3(0, 0, 0))
 
@@ -233,3 +257,21 @@ const tick = () =>
 }
 
 tick()
+
+
+
+/**
+ * Functions
+ */
+
+/**
+ * Revolve arbitrary planet
+ * @param {Group} planet 
+ * @param {Double} speed 
+ * @param {Double} radius 
+ * @param {Double} elapsedTime 
+ */
+function revolvePlanet(planet, speed, radius, elapsedTime) {
+    planet.position.x = Math.cos(elapsedTime * speed) * radius
+    planet.position.z = - Math.sin(elapsedTime * speed) * radius
+}
