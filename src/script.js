@@ -18,6 +18,15 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 /**
+ * Parameters
+ */
+const parameters = {
+    // saturn
+    saturnRevolutionSpeed: 0.1,
+    saturnRevolutionRadius: 20
+}
+
+/**
  * Loaders
  */
 const gltfLoader = new GLTFLoader()
@@ -115,20 +124,24 @@ torus.position.set(0, 0, 5)
 /**
  * Planets
  */
+let planetGrouop = new THREE.Group()
+scene.add(planetGrouop)
 
 /**
  * Saturn
  */
- gltfLoader.load(
+let saturnGroup = null
+
+gltfLoader.load(
     '/models/planets/saturn.glb',
     (gltf) =>
     {
-        const saturnGroup = gltf.scene
+        saturnGroup = gltf.scene
 
         saturnGroup.scale.set(planetsScale, planetsScale, planetsScale)
         saturnGroup.position.set(10, 0, 0)
 
-        scene.add(saturnGroup)
+        planetGrouop.add(saturnGroup)
     }
 )
 
@@ -162,6 +175,8 @@ window.addEventListener('resize', () =>
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.set(0, 5, 15)
 scene.add(camera)
+
+
 
 
 
@@ -217,9 +232,21 @@ const tick = () =>
         currentAngle += Math.PI / 100
     }
 
-    camera.position.x = Math.sin(currentAngle) * 9
-    camera.position.y = Math.sin(currentAngle) * 2
-    camera.position.z = Math.cos(currentAngle) * 9
+    // Rotate planets
+    if(saturnGroup != null) {
+        saturnGroup.position.x = Math.cos(elapsedTime * parameters.saturnRevolutionSpeed) * parameters.saturnRevolutionRadius
+        saturnGroup.position.z = - Math.sin(elapsedTime * parameters.saturnRevolutionSpeed) * parameters.saturnRevolutionRadius
+
+        camera.position.x = saturnGroup.position.x * 1.4
+        camera.position.y = 1.2
+        camera.position.z = saturnGroup.position.z * 1.4 
+    }
+    
+
+    // Rotate camera position
+    if(saturnGroup != null) {
+ 
+    }
 
     camera.lookAt(new THREE.Vector3(0, 0, 0))
 
