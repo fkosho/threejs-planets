@@ -2,7 +2,7 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
-import { CubeTextureLoader, MeshStandardMaterial, Vector3 } from 'three'
+import { CubeTextureLoader, Group, MeshStandardMaterial, Vector3 } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 /**
@@ -234,18 +234,15 @@ const tick = () =>
 
     // Rotate planets
     if(saturnGroup != null) {
-        saturnGroup.position.x = Math.cos(elapsedTime * parameters.saturnRevolutionSpeed) * parameters.saturnRevolutionRadius
-        saturnGroup.position.z = - Math.sin(elapsedTime * parameters.saturnRevolutionSpeed) * parameters.saturnRevolutionRadius
-
-        camera.position.x = saturnGroup.position.x * 1.4
-        camera.position.y = 1.2
-        camera.position.z = saturnGroup.position.z * 1.4 
+        revolvePlanet(saturnGroup, parameters.saturnRevolutionSpeed, parameters.saturnRevolutionRadius, elapsedTime)
     }
     
 
     // Rotate camera position
     if(saturnGroup != null) {
- 
+        camera.position.x = saturnGroup.position.x * 1.4
+        camera.position.y = 1.2
+        camera.position.z = saturnGroup.position.z * 1.4  
     }
 
     camera.lookAt(new THREE.Vector3(0, 0, 0))
@@ -260,3 +257,21 @@ const tick = () =>
 }
 
 tick()
+
+
+
+/**
+ * Functions
+ */
+
+/**
+ * Revolve arbitrary planet
+ * @param {Group} planet 
+ * @param {Double} speed 
+ * @param {Double} radius 
+ * @param {Double} elapsedTime 
+ */
+function revolvePlanet(planet, speed, radius, elapsedTime) {
+    planet.position.x = Math.cos(elapsedTime * speed) * radius
+    planet.position.z = - Math.sin(elapsedTime * speed) * radius
+}
