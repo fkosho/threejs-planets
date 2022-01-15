@@ -21,9 +21,13 @@ const scene = new THREE.Scene()
  * Parameters
  */
 const parameters = {
-    // saturn
-    saturnRevolutionSpeed: 0.1,
-    saturnRevolutionRadius: 20
+    // Saturn
+    saturnRevolutionSpeed: 0.0333,
+    saturnRevolutionRadius: 20,
+
+    // Earth
+    earthRevolutionSpeed: 1,
+    earthRevolutionRadius: 5,
 }
 
 /**
@@ -146,6 +150,21 @@ gltfLoader.load(
 )
 
 /**
+ * Earth
+ */
+let earthGroup = null
+
+const earthSampleMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(1, 10, 10),
+    new THREE.MeshStandardMaterial({
+        color: 0x0000ff
+    })
+)
+earthGroup = earthSampleMesh
+
+planetGrouop.add(earthSampleMesh)
+
+/**
  * Sizes
  */
 const sizes = {
@@ -173,7 +192,7 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(0, 5, 15)
+// camera.position.set(0, 10, 15)
 scene.add(camera)
 
 
@@ -236,12 +255,16 @@ const tick = () =>
     if(saturnGroup != null) {
         revolvePlanet(saturnGroup, parameters.saturnRevolutionSpeed, parameters.saturnRevolutionRadius, elapsedTime)
     }
+
+    if(earthGroup != null) {
+        revolvePlanet(earthSampleMesh, parameters.earthRevolutionSpeed, parameters.earthRevolutionRadius, elapsedTime)
+    }
     
 
     // Rotate camera position
     if(saturnGroup != null) {
         camera.position.x = saturnGroup.position.x * 1.4
-        camera.position.y = 1.2
+        camera.position.y = 2.2
         camera.position.z = saturnGroup.position.z * 1.4  
     }
 
@@ -266,7 +289,7 @@ tick()
 
 /**
  * Revolve arbitrary planet
- * @param {Group} planet 
+ * @param {*} planet 
  * @param {Double} speed 
  * @param {Double} radius 
  * @param {Double} elapsedTime 
