@@ -21,6 +21,10 @@ const scene = new THREE.Scene()
  * Parameters
  */
 const parameters = {
+    // Camera
+    cameraDistance: 1.4,
+    cameraY: 2.2,
+
     // Saturn
     saturnRevolutionSpeed: 0.0333,
     saturnRevolutionRadius: 20,
@@ -128,8 +132,8 @@ torus.position.set(0, 0, 5)
 /**
  * Planets
  */
-let planetGrouop = new THREE.Group()
-scene.add(planetGrouop)
+let planetGroup = new THREE.Group()
+scene.add(planetGroup)
 
 /**
  * Saturn
@@ -141,11 +145,12 @@ gltfLoader.load(
     (gltf) =>
     {
         saturnGroup = gltf.scene
+        saturnGroup.name = 'Saturn'
 
         saturnGroup.scale.set(planetsScale, planetsScale, planetsScale)
         saturnGroup.position.set(10, 0, 0)
 
-        planetGrouop.add(saturnGroup)
+        planetGroup.add(saturnGroup)
     }
 )
 
@@ -161,8 +166,9 @@ const earthSampleMesh = new THREE.Mesh(
     })
 )
 earthGroup = earthSampleMesh
+earthGroup.name = 'Earth'
 
-planetGrouop.add(earthSampleMesh)
+planetGroup.add(earthSampleMesh)
 
 /**
  * Sizes
@@ -196,9 +202,6 @@ const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 
 scene.add(camera)
 
 
-
-
-
 /**
  * Lights
  */
@@ -218,38 +221,52 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 renderer.outputEncoding = THREE.sRGBEncoding
 
 /**
- * Events
- */
-// Click
-let currentAngle = 0
-let destinationAngle = 0
-
-window.addEventListener('click', () =>
-{
-    // if(destinationAngle == currentAngle)
-    // {
-        destinationAngle = currentAngle + Math.round(Math.PI / 2 * 100000) / 100000
-    // }
-})
-
-
-/**
  * Animate
  */
 const clock = new THREE.Clock()
 let currentTime = 0
+let currentPlanet = null
 
+/**
+ * Raycaster
+ */
+const raycaster = new THREE.Raycaster()
+
+/**
+ * Mouse
+ */
+const mouse = new THREE.Vector2()
+
+// Mouse move
+window.addEventListener('mousemove', (event) =>
+{
+    mouse.x = event.clientX / sizes.width * 2 - 1
+    mouse.y = - (event.clientY / sizes.height) * 2 + 1
+})
+
+// Click
+let currentIntersect = null
+
+window.addEventListener('click', () =>
+{
+    console.log(currentIntersect)
+    if(currentIntersect != null)
+    {
+        const toPlanetName = currentIntersect.object.name
+        const toPlanet = planetGroup.getObjectByName(toPlanetName)
+        changeCameraPosition(toPlanet)
+    } else
+    {
+        currentPlanet = null
+    }
+})
+
+//
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - currentTime
     currentTime = elapsedTime
-
-    // Animate Rotation
-    if(currentAngle < destinationAngle)
-    {
-        currentAngle += Math.PI / 100
-    }
 
     // Rotate planets
     if(saturnGroup != null) {
@@ -262,15 +279,39 @@ const tick = () =>
     
 
     // Rotate camera position
-    if(saturnGroup != null) {
-        camera.position.x = saturnGroup.position.x * 1.4
-        camera.position.y = 2.2
-        camera.position.z = saturnGroup.position.z * 1.4  
+    switch(currentPlanet) {
+        case null:
+            camera.position.x = - Math.cos(elapsedTime * 0.1) * 15
+            camera.position.y = 3
+            camera.position.z = Math.sin(elapsedTime * 0.1) * 15
+            break
+            
+        case 'Earth':
+            if(earthGroup != null) {
+                camera.position.x = earthGroup.position.x * parameters.cameraDistance
+                camera.position.y = parameters.cameraY
+                camera.position.z = earthGroup.position.z * parameters.cameraDistance
+                break
+            }    
+        
+        case 'Saturn':
+            if(saturnGroup != null) {
+                camera.position.x = saturnGroup.position.x * parameters.cameraDistance
+                camera.position.y = parameters.cameraY
+                camera.position.z = saturnGroup.position.z * parameters.cameraDistance
+                break
+            }
     }
+
 
     camera.lookAt(new THREE.Vector3(0, 0, 0))
 
-    // console.log(destinationAngle, currentAngle)
+
+    // Cast a ray
+    raycaster.setFromCamera(mouse, camera)
+
+    const intersects = raycaster.intersectObject(earthSampleMesh)
+    currentIntersect = intersects[0]
 
     // Render
     renderer.render(scene, camera)
@@ -297,4 +338,16 @@ tick()
 function revolvePlanet(planet, speed, radius, elapsedTime) {
     planet.position.x = Math.cos(elapsedTime * speed) * radius
     planet.position.z = - Math.sin(elapsedTime * speed) * radius
+}
+
+/**
+ * Switch camera position to other planet's back 
+ */
+function changeCameraPosition(toPlanet) {
+    camera.position.set(
+        toPlanet.position.x * parameters.cameraDistance,
+        parameters.cameraY,
+        toPlanet.position.z * parameters.cameraDistance
+    )
+    currentPlanet = toPlanet.name
 }
