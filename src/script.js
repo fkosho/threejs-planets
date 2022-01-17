@@ -22,7 +22,7 @@ const scene = new THREE.Scene()
  */
 const parameters = {
     // Camera
-    cameraDistance: 10.4,
+    cameraDistance: 2.4,
     cameraY: 2.2,
 
     // Saturn
@@ -90,8 +90,7 @@ const planetsScale = 0.02
 
 // Material
 const sampleMaterial = new THREE.MeshStandardMaterial({ 
-    map: planetTexture,
-    color: '#ffffff'
+    color: 0xbb3333
 })
 
 const waterMaterial = new THREE.MeshStandardMaterial({
@@ -106,19 +105,19 @@ const waterMaterial = new THREE.MeshStandardMaterial({
 })
 
 // cube
-const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
+const sun = new THREE.Mesh(
+    new THREE.SphereGeometry(3, 32, 32),
     sampleMaterial
 )
-scene.add(cube)
-cube.position.set(0, 0, 0)
+scene.add(sun)
+sun.position.set(0, 0, 0)
 
 // sphere
 const sphere = new THREE.Mesh(
     new THREE.SphereGeometry(1, 32, 32),
     waterMaterial
 )
-scene.add(sphere)
+// scene.add(sphere)
 sphere.position.set(0, 0, - 5)
 
 // torus
@@ -126,7 +125,7 @@ const torus = new THREE.Mesh(
     new THREE.TorusGeometry(1, 0.3, 32, 32),
     waterMaterial
 )
-scene.add(torus)
+// scene.add(torus)
 torus.position.set(0, 0, 5)
 
 /**
@@ -343,23 +342,23 @@ const tick = () =>
         const goalPlanet = gpn
         console.log(goalPlanet)
 
-        console.log('Earth Position before', earthSampleMesh.position)
-        goalPosition = goalPlanet.position.multiplyScalar(parameters.cameraDistance) // Error Cause
-        console.log('Earth Position after', earthSampleMesh.position)
+        goalPosition = goalPlanet.position.clone()
+        console.log(goalPosition)
+        goalPosition.multiplyScalar(parameters.cameraDistance)
+
+        // console.log('Earth Position before', earthSampleMesh.position)
+        // goalPosition = goalPlanet.position.multiplyScalar(parameters.cameraDistance) // Error Cause
+        // console.log('Earth Position after', earthSampleMesh.position)
 
 
         const movedPosition = moveCameraPosition(startPosition, goalPosition, elapsedTime)
             // .multiplyScalar(parameters.cameraDistance)
-        // console.log(movedPosition)
 
         camera.position.set(movedPosition.x, movedPosition.y, movedPosition.z)
 
     }
 
     camera.lookAt(new THREE.Vector3(0, 0, 0))
-
-    console.log('Earth Position2', earthSampleMesh.position)
-    console.log(cameraOnChange)
 
     // Cast a ray
     raycaster.setFromCamera(mouse, camera)
