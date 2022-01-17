@@ -22,7 +22,7 @@ const scene = new THREE.Scene()
  */
 const parameters = {
     // Camera
-    cameraDistance: 1.4,
+    cameraDistance: 10.4,
     cameraY: 2.2,
 
     // Saturn
@@ -201,6 +201,7 @@ const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 
 // camera.position.set(0, 10, 15)
 scene.add(camera)
 
+let cameraOnChange = false
 
 /**
  * Lights
@@ -247,18 +248,35 @@ window.addEventListener('mousemove', (event) =>
 // Click
 let currentIntersect = null
 
+// Change camera position instantly
+
+// window.addEventListener('click', () =>
+// {
+//     console.log(currentIntersect)
+//     if(currentIntersect != null)
+//     {
+//         const toPlanetName = currentIntersect.object.name
+//         const toPlanet = planetGroup.getObjectByName(toPlanetName)
+//         changeCameraPosition(toPlanet)
+//     } else
+//     {
+//         currentPlanet = null
+//     }
+// })
+
+let gpn = ''
+
+// Change camera position gradually
 window.addEventListener('click', () =>
 {
-    console.log(currentIntersect)
     if(currentIntersect != null)
     {
         const toPlanetName = currentIntersect.object.name
         const toPlanet = planetGroup.getObjectByName(toPlanetName)
-        changeCameraPosition(toPlanet)
-    } else
-    {
-        currentPlanet = null
+        cameraOnChange = true
+        gpn = toPlanet
     }
+    console.log(cameraOnChange)
 })
 
 //
@@ -278,34 +296,70 @@ const tick = () =>
     }
     
 
-    // Rotate camera position
-    switch(currentPlanet) {
-        case null:
-            camera.position.x = - Math.cos(elapsedTime * 0.1) * 15
-            camera.position.y = 3
-            camera.position.z = Math.sin(elapsedTime * 0.1) * 15
-            break
-            
-        case 'Earth':
-            if(earthGroup != null) {
-                camera.position.x = earthGroup.position.x * parameters.cameraDistance
-                camera.position.y = parameters.cameraY
-                camera.position.z = earthGroup.position.z * parameters.cameraDistance
-                break
-            }    
-        
-        case 'Saturn':
-            if(saturnGroup != null) {
-                camera.position.x = saturnGroup.position.x * parameters.cameraDistance
-                camera.position.y = parameters.cameraY
-                camera.position.z = saturnGroup.position.z * parameters.cameraDistance
-                break
-            }
-    }
 
+    // Rotate camera position while not changing focus planet
+    // while not changing focus planet
+    if(cameraOnChange == false) {
+        switch(currentPlanet) {
+            case null:
+                camera.position.x = - Math.cos(elapsedTime * 0.1) * 15
+                camera.position.y = 3
+                camera.position.z = Math.sin(elapsedTime * 0.1) * 15
+                break
+                
+            case 'Earth':
+                if(earthGroup != null) {
+                    camera.position.x = earthGroup.position.x * parameters.cameraDistance
+                    camera.position.y = parameters.cameraY
+                    camera.position.z = earthGroup.position.z * parameters.cameraDistance
+                    break
+                }    
+            
+            case 'Saturn':
+                if(saturnGroup != null) {
+                    camera.position.x = saturnGroup.position.x * parameters.cameraDistance
+                    camera.position.y = parameters.cameraY
+                    camera.position.z = saturnGroup.position.z * parameters.cameraDistance
+                    break
+                }
+        }    
+    } else
+    // while changing focus planet
+    {
+        let startPosition = null
+        let goalPosition = null
+
+        if(currentPlanet != null) 
+        {
+            const startPlanetName = currentPlanet.name
+            const startPlanet = planetGroup.getObjectByName(startPlanetName)
+            console.log(startPlanet)
+            startPosition = startPlanet.position // TODO: modify position. start position does not equal to startPlanet position but camera position.
+        } else
+        {
+            startPosition = camera.position
+        }
+
+        const goalPlanet = gpn
+        console.log(goalPlanet)
+
+        console.log('Earth Position before', earthSampleMesh.position)
+        goalPosition = goalPlanet.position.multiplyScalar(parameters.cameraDistance) // Error Cause
+        console.log('Earth Position after', earthSampleMesh.position)
+
+
+        const movedPosition = moveCameraPosition(startPosition, goalPosition, elapsedTime)
+            // .multiplyScalar(parameters.cameraDistance)
+        // console.log(movedPosition)
+
+        camera.position.set(movedPosition.x, movedPosition.y, movedPosition.z)
+
+    }
 
     camera.lookAt(new THREE.Vector3(0, 0, 0))
 
+    console.log('Earth Position2', earthSampleMesh.position)
+    console.log(cameraOnChange)
 
     // Cast a ray
     raycaster.setFromCamera(mouse, camera)
@@ -350,4 +404,30 @@ function changeCameraPosition(toPlanet) {
         toPlanet.position.z * parameters.cameraDistance
     )
     currentPlanet = toPlanet.name
+}
+
+/**
+ * Move camera position to destination per frame
+ * @param {Vector3} startPosition
+ * @param {Vector3} goalPosition
+ * 
+ */
+function moveCameraPosition(startPosition, goalPosition, elapsedTime) {
+    let moveVector = new THREE.Vector3()
+    let movedPosition = new THREE.Vector3()
+
+    moveVector.subVectors(goalPosition, startPosition).multiplyScalar(elapsedTime).multiplyScalar(0.01)
+
+    movedPosition.addVectors(startPosition, moveVector)
+
+    console.log('Base Vector', startPosition)
+    console.log('Move Vector', moveVector)
+    console.log('Moved Position', movedPosition)
+    console.log('Goal Position', goalPosition)
+
+    if(movedPosition > goalPosition) { // TODO: this rogic is wrong.
+        console.log('finish camera moving')
+        cameraOnChange = false // TODO: the timing this code applied is too early
+    }
+    return movedPosition
 }
