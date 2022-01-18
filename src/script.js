@@ -278,6 +278,8 @@ window.addEventListener('click', () =>
     console.log(cameraOnChange)
 })
 
+let movedLookAtPosition = new THREE.Vector3()
+
 //
 const tick = () =>
 {
@@ -340,25 +342,31 @@ const tick = () =>
         }
 
         const goalPlanet = gpn
-        console.log(goalPlanet)
 
         goalPosition = goalPlanet.position.clone()
-        console.log(goalPosition)
+        movedLookAtPosition = moveLookAtPosition(new THREE.Vector3(0, 0, 0), goalPosition, elapsedTime) // position of moved lookat position
+
         goalPosition.multiplyScalar(parameters.cameraDistance)
 
-        // console.log('Earth Position before', earthSampleMesh.position)
-        // goalPosition = goalPlanet.position.multiplyScalar(parameters.cameraDistance) // Error Cause
-        // console.log('Earth Position after', earthSampleMesh.position)
-
-
-        const movedPosition = moveCameraPosition(startPosition, goalPosition, elapsedTime)
-            // .multiplyScalar(parameters.cameraDistance)
+        const movedPosition = moveCameraPosition(startPosition, goalPosition, elapsedTime) // position of moved camera
+        
+        console.log('look at position', movedLookAtPosition)
+        // console.log()
+        // console.log()
 
         camera.position.set(movedPosition.x, movedPosition.y, movedPosition.z)
 
     }
 
-    camera.lookAt(new THREE.Vector3(0, 0, 0))
+    // camera.lookAt(new THREE.Vector3(0, 0, 0))
+
+    if(gpn == null) {
+        camera.lookAt(new THREE.Vector3(0, 0, 0))
+    }
+    else
+    {
+        camera.lookAt(movedLookAtPosition)
+    }
 
     // Cast a ray
     raycaster.setFromCamera(mouse, camera)
@@ -419,10 +427,40 @@ function moveCameraPosition(startPosition, goalPosition, elapsedTime) {
 
     movedPosition.addVectors(startPosition, moveVector)
 
-    console.log('Base Vector', startPosition)
-    console.log('Move Vector', moveVector)
-    console.log('Moved Position', movedPosition)
-    console.log('Goal Position', goalPosition)
+    if(movedPosition > goalPosition) { // TODO: this rogic is wrong.
+        console.log('finish camera moving')
+        cameraOnChange = false // TODO: the timing this code applied is too early
+    }
+    return movedPosition
+}
+
+/**
+ * Move camera position to destination per frame
+ * @param {Vector3} startPosition
+ * @param {Vector3} goalPosition
+ * 
+ */
+ function moveLookAtPosition(startPosition, goalPosition, elapsedTime) {
+    let moveVector = new THREE.Vector3()
+    let movedPosition = new THREE.Vector3()
+    let currentDistance = new THREE.Vector3()
+
+    moveVector.subVectors(goalPosition, startPosition).multiplyScalar(elapsedTime).multiplyScalar(0.0001)
+
+    // movedPosition.addVectors(startPosition, moveVector)
+
+    ////
+    currentDistance.subVectors(goalPosition, startPosition)
+
+    if(moveVector < currentDistance) {
+        movedPosition.addVectors(startPosition, moveVector)
+    } 
+    else
+    {
+        movedPosition.addVectors(startPosition, currentDistance)
+    }
+    /////
+
 
     if(movedPosition > goalPosition) { // TODO: this rogic is wrong.
         console.log('finish camera moving')
