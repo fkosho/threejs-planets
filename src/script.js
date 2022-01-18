@@ -247,23 +247,8 @@ window.addEventListener('mousemove', (event) =>
 // Click
 let currentIntersect = null
 
-// Change camera position instantly
 
-// window.addEventListener('click', () =>
-// {
-//     console.log(currentIntersect)
-//     if(currentIntersect != null)
-//     {
-//         const toPlanetName = currentIntersect.object.name
-//         const toPlanet = planetGroup.getObjectByName(toPlanetName)
-//         changeCameraPosition(toPlanet)
-//     } else
-//     {
-//         currentPlanet = null
-//     }
-// })
-
-let gpn = ''
+let gpn = '' // goal planet name
 
 // Change camera position gradually
 window.addEventListener('click', () =>
@@ -351,14 +336,10 @@ const tick = () =>
         const movedPosition = moveCameraPosition(startPosition, goalPosition, elapsedTime) // position of moved camera
         
         console.log('look at position', movedLookAtPosition)
-        // console.log()
-        // console.log()
 
         camera.position.set(movedPosition.x, movedPosition.y, movedPosition.z)
 
     }
-
-    // camera.lookAt(new THREE.Vector3(0, 0, 0))
 
     if(gpn == null) {
         camera.lookAt(new THREE.Vector3(0, 0, 0))
@@ -402,18 +383,6 @@ function revolvePlanet(planet, speed, radius, elapsedTime) {
 }
 
 /**
- * Switch camera position to other planet's back 
- */
-function changeCameraPosition(toPlanet) {
-    camera.position.set(
-        toPlanet.position.x * parameters.cameraDistance,
-        parameters.cameraY,
-        toPlanet.position.z * parameters.cameraDistance
-    )
-    currentPlanet = toPlanet.name
-}
-
-/**
  * Move camera position to destination per frame
  * @param {Vector3} startPosition
  * @param {Vector3} goalPosition
@@ -447,9 +416,6 @@ function moveCameraPosition(startPosition, goalPosition, elapsedTime) {
 
     moveVector.subVectors(goalPosition, startPosition).multiplyScalar(elapsedTime).multiplyScalar(0.0001)
 
-    // movedPosition.addVectors(startPosition, moveVector)
-
-    ////
     currentDistance.subVectors(goalPosition, startPosition)
 
     if(moveVector < currentDistance) {
@@ -459,7 +425,6 @@ function moveCameraPosition(startPosition, goalPosition, elapsedTime) {
     {
         movedPosition.addVectors(startPosition, currentDistance)
     }
-    /////
 
 
     if(movedPosition > goalPosition) { // TODO: this rogic is wrong.
