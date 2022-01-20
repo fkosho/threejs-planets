@@ -2,8 +2,11 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
-import { CubeTextureLoader, Group, MeshStandardMaterial, Vector3 } from 'three'
+import { CubeTextureLoader, Float32BufferAttribute, GeometryUtils, Group, MeshStandardMaterial, Vector3 } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import planetEffectVertexShader from './shaders/effects/planets/vertex.glsl'
+import planetEffectFragmentShader from './shaders/effects/planets/fragment.glsl'
+
 
 /**
  * Base
@@ -127,6 +130,62 @@ const torus = new THREE.Mesh(
 )
 // scene.add(torus)
 torus.position.set(0, 0, 5)
+
+/**
+ * Effect Billboard
+ */
+// Geometry
+const effectGeometry = new THREE.BufferGeometry()
+
+const effectVertices = [
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0,
+]
+
+const uvs = [
+    0, 0,
+    1, 0,
+    1, 1,
+    0, 1
+]
+
+const effectOffsets = [
+    -1, -1,
+    1, -1,
+    1, 1,
+    -1, 1
+]
+
+const indices = [
+    0, 1, 2,
+    2, 3, 0
+]
+
+effectGeometry.setIndex(indices)
+effectGeometry.setAttribute('position', new THREE.Float32BufferAttribute(effectVertices, 3))
+effectGeometry.setAttribute('uv', new Float32BufferAttribute(uvs, 2))
+effectGeometry.setAttribute('offset', new THREE.Float32BufferAttribute(effectOffsets, 2))
+
+// Material 
+const effectMaterial = new THREE.ShaderMaterial({
+    vertexShader: planetEffectVertexShader,
+    fragmentShader: planetEffectFragmentShader,
+    uniforms: {
+        uWidth: { value: 10 },
+        uHeight: { value: 10 },
+        uTime: { value: 0 }
+    }
+})
+
+// Mesh
+const effectMesh = new THREE.Mesh(
+    effectGeometry,
+    effectMaterial
+)
+scene.add(effectMesh)
+
 
 /**
  * Planets
@@ -271,6 +330,9 @@ const tick = () =>
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - currentTime
     currentTime = elapsedTime
+
+    // update effect shader time
+    effectMaterial.uniforms.uTime = elapsedTime
 
     // Rotate planets
     if(saturnGroup != null) {
