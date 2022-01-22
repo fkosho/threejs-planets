@@ -173,8 +173,8 @@ const effectMaterial = new THREE.ShaderMaterial({
     vertexShader: planetEffectVertexShader,
     fragmentShader: planetEffectFragmentShader,
     uniforms: {
-        uWidth: { value: 10 },
-        uHeight: { value: 10 },
+        uWidth: { value: 15 },
+        uHeight: { value: 15 },
         uTime: { value: 0 }
     }
 })
@@ -332,7 +332,7 @@ const tick = () =>
     currentTime = elapsedTime
 
     // update effect shader time
-    effectMaterial.uniforms.uTime = elapsedTime
+    effectMaterial.uniforms.uTime.value = elapsedTime
 
     // Rotate planets
     if(saturnGroup != null) {
@@ -482,10 +482,12 @@ function moveCameraPosition(startPosition, goalPosition, elapsedTime) {
 
     if(moveVector < currentDistance) {
         movedPosition.addVectors(startPosition, moveVector)
+        console.log('aaaa')
     } 
     else
     {
         movedPosition.addVectors(startPosition, currentDistance)
+        console.log('bbb')
     }
 
 

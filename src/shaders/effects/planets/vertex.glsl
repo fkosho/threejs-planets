@@ -2,10 +2,10 @@ attribute vec2 offset;
 
 uniform float uWidth;
 uniform float uHeight;
-// uniform float uTime;
+uniform float uTime;
 
 varying vec2 vUv;
-// varying float vTime;
+varying float vTime;
 
 void main()
 {
@@ -16,5 +16,5 @@ void main()
     gl_Position = projectionMatrix * modelViewPosition;
 
     vUv = uv;
-    // vTime = uTime;
+    vTime = uTime;
 }
