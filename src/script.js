@@ -173,8 +173,8 @@ const effectMaterial = new THREE.ShaderMaterial({
     vertexShader: planetEffectVertexShader,
     fragmentShader: planetEffectFragmentShader,
     uniforms: {
-        uWidth: { value: 10 },
-        uHeight: { value: 10 },
+        uWidth: { value: 15 },
+        uHeight: { value: 15 },
         uTime: { value: 0 }
     }
 })
@@ -184,7 +184,7 @@ const effectMesh = new THREE.Mesh(
     effectGeometry,
     effectMaterial
 )
-scene.add(effectMesh)
+// scene.add(effectMesh)
 
 
 /**
@@ -332,7 +332,7 @@ const tick = () =>
     currentTime = elapsedTime
 
     // update effect shader time
-    effectMaterial.uniforms.uTime = elapsedTime
+    effectMaterial.uniforms.uTime.value = elapsedTime
 
     // Rotate planets
     if(saturnGroup != null) {
@@ -391,13 +391,13 @@ const tick = () =>
         const goalPlanet = gpn
 
         goalPosition = goalPlanet.position.clone()
-        movedLookAtPosition = moveLookAtPosition(new THREE.Vector3(0, 0, 0), goalPosition, elapsedTime) // position of moved lookat position
+        movedLookAtPosition = moveLookAtPosition(new THREE.Vector3(0, 0, 0), goalPosition, deltaTime * 10) // position of moved lookat position
 
         goalPosition.multiplyScalar(parameters.cameraDistance)
 
-        const movedPosition = moveCameraPosition(startPosition, goalPosition, elapsedTime) // position of moved camera
+        const movedPosition = moveCameraPosition(startPosition, goalPosition, deltaTime) // position of moved camera
         
-        console.log('look at position', movedLookAtPosition)
+        // console.log('look at position', movedLookAtPosition)
 
         camera.position.set(movedPosition.x, movedPosition.y, movedPosition.z)
 
@@ -405,10 +405,12 @@ const tick = () =>
 
     if(gpn == null) {
         camera.lookAt(new THREE.Vector3(0, 0, 0))
+        effectMesh.position.set(0, 0, 0)
     }
     else
     {
         camera.lookAt(movedLookAtPosition)
+        // effectMesh.position.set(movedLookAtPosition)
     }
 
     // Cast a ray
@@ -454,7 +456,9 @@ function moveCameraPosition(startPosition, goalPosition, elapsedTime) {
     let moveVector = new THREE.Vector3()
     let movedPosition = new THREE.Vector3()
 
-    moveVector.subVectors(goalPosition, startPosition).multiplyScalar(elapsedTime).multiplyScalar(0.01)
+    moveVector.subVectors(goalPosition, startPosition)
+        // .multiplyScalar(elapsedTime)
+        .multiplyScalar(0.01)
 
     movedPosition.addVectors(startPosition, moveVector)
 
@@ -474,18 +478,29 @@ function moveCameraPosition(startPosition, goalPosition, elapsedTime) {
  function moveLookAtPosition(startPosition, goalPosition, elapsedTime) {
     let moveVector = new THREE.Vector3()
     let movedPosition = new THREE.Vector3()
-    let currentDistance = new THREE.Vector3()
+    let currentDistanceVector = new THREE.Vector3()
+    let currentDistance, moveDistance
 
-    moveVector.subVectors(goalPosition, startPosition).multiplyScalar(elapsedTime).multiplyScalar(0.0001)
+    moveVector.subVectors(goalPosition, startPosition)
+        // .multiplyScalar(elapsedTime)
+        .multiplyScalar(0.8)
 
-    currentDistance.subVectors(goalPosition, startPosition)
+    currentDistanceVector.subVectors(goalPosition, startPosition).length()
+    currentDistance = currentDistanceVector.clone().length()
+    moveDistance = moveVector.clone().length()
 
-    if(moveVector < currentDistance) {
+    console.log(moveDistance, currentDistance)
+
+    if(moveDistance < currentDistance) {
         movedPosition.addVectors(startPosition, moveVector)
+        console.log('aaaa')
     } 
     else
     {
-        movedPosition.addVectors(startPosition, currentDistance)
+        movedPosition.addVectors(startPosition, currentDistanceVector
+            // .multiplyScalar(20)
+        )
+        console.log('bbb')
     }
 
 
