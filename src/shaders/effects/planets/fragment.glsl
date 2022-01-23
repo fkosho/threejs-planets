@@ -15,5 +15,4 @@ void main()
     float strength = 1.0 - step(0.01, abs(distance(wavedUv, vec2(0.5)) - 0.25));
 
     gl_FragColor = vec4(vec3(strength), 1.0);
-    gl_FragColor = vec4(vec3(strength), 1.0);
 }
