@@ -6,7 +6,10 @@ import { CubeTextureLoader, Float32BufferAttribute, GeometryUtils, Group, MeshSt
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import planetEffectVertexShader from './shaders/effects/planets/vertex.glsl'
 import planetEffectFragmentShader from './shaders/effects/planets/fragment.glsl'
+import Experience from './Experience/Experience.js'
 
+// restructuring test
+// const experience = new Experience()
 
 /**
  * Base
@@ -16,6 +19,9 @@ const gui = new dat.GUI()
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
+const experience = new Experience(document.querySelector('canvas.webgl'))
+
+console.log(experience)
 
 // Scene
 const scene = new THREE.Scene()
@@ -249,6 +255,7 @@ window.addEventListener('resize', () =>
     // Update renderer
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    console.log('aaa')
 })
 
 /**
@@ -509,4 +516,5 @@ function moveCameraPosition(startPosition, goalPosition, elapsedTime) {
         cameraOnChange = false // TODO: the timing this code applied is too early
     }
     return movedPosition
+    
 }
