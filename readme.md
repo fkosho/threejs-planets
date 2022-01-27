@@ -14,3 +14,6 @@ npm run dev
 # Build for production in the dist/ directory
 npm run build
 ```
+
+## Debug GUI
+if you want to try debugging in GUI, add `/#debug` to the end of URL.
