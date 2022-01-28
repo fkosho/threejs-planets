@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { SphereGeometry } from 'three'
+import { Object3D, SphereGeometry } from 'three'
 import Experience from '../../Experience'
 
 export default class Planet
