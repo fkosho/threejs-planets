@@ -6,6 +6,8 @@ export default class Earth extends Planet
     {
         super(radius, widthSegments, heightSegments, color, metalness, roughness, opacity, transparent)
 
-        this.mesh.position.set(- 1, 1, 1)
+        // Parameters
+        this.revolveRadius = 3
+        this.revolveSpeed = 0.001
     }
 }

@@ -6,7 +6,9 @@ import Sizes from './Utils/Sizes.js'
 import Time from './Utils/Time.js'
 import Resources from './Utils/Resources.js'
 import Debug from './Utils/Debug.js'
+import Raycaster from './Utils/Raycaster.js'
 import sources from './sources.js'
+
 
 let instance = null
 
@@ -36,6 +38,7 @@ export default class Experience
         this.camera = new Camera()
         this.renderer = new Renderer()
         this.world = new World()
+        this.raycaster = new Raycaster()
 
         // Resize event
         this.sizes.on('resize', () =>
@@ -48,6 +51,12 @@ export default class Experience
         {
             this.update()
         })
+
+        // // Raycaster tick event
+        // this.raycaster.on('tick', () =>
+        // {
+        //     this.raycaster()
+        // })
     }
 
     resize()
@@ -61,6 +70,7 @@ export default class Experience
         this.camera.update()
         this.world.update()
         this.renderer.update()
+        this.raycaster.raycast()
     }
 
     destroy()

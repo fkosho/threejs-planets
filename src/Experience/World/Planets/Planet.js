@@ -24,6 +24,10 @@ export default class Planet
         this.setGeometry(radius, widthSegments, heightSegments)
         this.setMaterial(color, metalness, roughness, opacity, transparent)
         this.setMesh()
+
+        // Parameters
+        this.revolveRadius = 0
+        this.revolveSpeed = 0
     }
 
     setGeometry(radius, widthSegments, heightSegments)
@@ -50,8 +54,7 @@ export default class Planet
 
     revolve()
     {
-        this.mesh.position.x = Math.cos(this.time.elapsed * 0.001) * 4
-        this.mesh.position.z = - Math.sin(this.time.elapsed * 0.001) * 4
-        console.log(this.mesh.position.x, this.mesh.position.z)
+        this.mesh.position.x = Math.cos(this.time.elapsed * this.revolveSpeed) * this.revolveRadius
+        this.mesh.position.z = - Math.sin(this.time.elapsed * this.revolveSpeed) * this.revolveRadius
     }
 }

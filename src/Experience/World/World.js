@@ -26,17 +26,17 @@ export default class World
             this.venus = new Venus()
             this.environment = new Environment()            
         })
+
+        // Mouse over event
+        // this.mouse
     }
 
     update()
     {
-        // if(this.fox)
-        // {
-        //     this.fox.update()
-        // }
         if(this.earth)
         {
             this.earth.revolve()
+            this.venus.revolve()
         }
     }
 }
