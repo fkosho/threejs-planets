@@ -10,6 +10,7 @@ export default class Raycaster extends EventEmitter
 
         // Setup
         this.experience = new Experience()
+        this.scene = this.experience.scene
         this.sizes = this.experience.sizes
         this.mouse = new THREE.Vector2()
         this.camera = this.experience.camera
@@ -41,21 +42,23 @@ export default class Raycaster extends EventEmitter
     raycast()
     {
         // this works but the performance is too bad. it's necessary to modify.
-        if(Object.keys(this.experience.world.planets).length > 0)
+        
+        // set ray
+        this.instance.setFromCamera(this.mouse, this.camera.instance)
+
+        // set target objects
+        let target = []
+        this.scene.traverse((child) =>
         {
-            this.instance.setFromCamera(this.mouse, this.camera.instance)
-
-            // set target objects
-            let target = []
-            for(let key in this.experience.world.planets)
+            if(child instanceof THREE.Mesh)
             {
-                target.push(this.experience.world.planets[key].mesh)
+                target.push(child)
             }
-
-            this.intersects = this.instance.intersectObjects(target)
-            this.trigger('mouseover')
-            console.log(this.intersects)
-        }
+        })
+        
+        this.intersects = this.instance.intersectObjects(target)
+        this.trigger('mouseover')
+        console.log(this.intersects)
     }
 
     clickPlanet()
