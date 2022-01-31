@@ -6,7 +6,9 @@ import Sizes from './Utils/Sizes.js'
 import Time from './Utils/Time.js'
 import Resources from './Utils/Resources.js'
 import Debug from './Utils/Debug.js'
+import Raycaster from './Utils/Raycaster.js'
 import sources from './sources.js'
+
 
 let instance = null
 
@@ -36,11 +38,24 @@ export default class Experience
         this.camera = new Camera()
         this.renderer = new Renderer()
         this.world = new World()
+        this.raycaster = new Raycaster()
 
         // Resize event
         this.sizes.on('resize', () =>
         {
             this.resize()
+        })
+
+        // Mouseover event
+        this.raycaster.on('mouseover', () =>
+        {
+            this.mouseOver()
+        })
+
+        // Click event
+        this.raycaster.on('click', () =>
+        {
+            this.click()
         })
 
         // Time tick event
@@ -56,11 +71,32 @@ export default class Experience
         this.renderer.resize()
     }
 
+    mouseOver()
+    {
+        // this.world.mouseOver()
+    }
+
+    click()
+    {
+        console.log('click')
+
+        /**
+         * focus on clicked planet
+         */
+        // change focus target and gradually move camera per frame
+        this.camera.changeFocus()
+
+        // gradually reduce world's time speed to 0 per frame
+
+        // show planet's introduction text
+    }
+
     update()
     {
-        this.camera.update()
+        this.camera.updateFocus()
         this.world.update()
         this.renderer.update()
+        this.raycaster.raycast()
     }
 
     destroy()
@@ -90,7 +126,7 @@ export default class Experience
             }
         })
 
-        this.camera.controls.dispose()
+        // this.camera.controls.dispose()
         this.renderer.instance.dispose()
 
         if(this.debug.active)
