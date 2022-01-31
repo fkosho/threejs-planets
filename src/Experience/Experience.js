@@ -46,6 +46,18 @@ export default class Experience
             this.resize()
         })
 
+        // Mouseover event
+        this.raycaster.on('mouseover', () =>
+        {
+            this.mouseOver()
+        })
+
+        // Click event
+        this.raycaster.on('click', () =>
+        {
+            this.click()
+        })
+
         // Time tick event
         this.time.on('tick', () =>
         {
@@ -59,9 +71,21 @@ export default class Experience
         this.renderer.resize()
     }
 
+    mouseOver()
+    {
+        this.world.mouseOver()
+    }
+
+    click()
+    {
+        console.log('click')
+
+        this.world.changeFocus()
+    }
+
     update()
     {
-        this.camera.update()
+        // this.camera.update()
         this.world.update()
         this.renderer.update()
         this.raycaster.raycast()
