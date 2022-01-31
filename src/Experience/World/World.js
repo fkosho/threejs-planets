@@ -3,6 +3,7 @@ import Environment from './Environment.js'
 import Floor from './Floor.js'
 import Fox from './Fox.js'
 import Earth from './Planets/Earth.js'
+import Planet from './Planets/Planet.js'
 import Venus from './Planets/Venus.js'
 
 export default class World
@@ -34,7 +35,17 @@ export default class World
         if(this.planets.earth)
         {
             this.planets.earth.revolve()
+        }
+        if(this.planets.venus)
+        {
             this.planets.venus.revolve()
         }
+    }
+
+    mouseOver()
+    { 
+        // add effect
+        this.selected = this.experience.raycaster.intersects[0].object
+        
     }
 }

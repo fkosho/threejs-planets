@@ -30,7 +30,7 @@ export default class Raycaster extends EventEmitter
         // click a planet
         window.addEventListener('click', () =>
         {
-            this.clickPlanet()
+            this.trigger('click')
         })
     }
 
@@ -41,29 +41,25 @@ export default class Raycaster extends EventEmitter
 
     raycast()
     {
-        // this works but the performance is too bad. it's necessary to modify.
+        // this works properly but the performance is bad. it's necessary to modify.
         
         // set ray
         this.instance.setFromCamera(this.mouse, this.camera.instance)
 
         // set target objects
-        let target = []
+        this.target = []
         this.scene.traverse((child) =>
         {
             if(child instanceof THREE.Mesh)
             {
-                target.push(child)
+                this.target.push(child)
             }
         })
         
-        this.intersects = this.instance.intersectObjects(target)
-        this.trigger('mouseover')
-        console.log(this.intersects)
-    }
-
-    clickPlanet()
-    {
-        // in progress
-        console.log('clicked planet!!')
+        this.intersects = this.instance.intersectObjects(this.target)
+        if(this.intersects.length)
+        {
+            this.trigger('mouseover')
+        }
     }
 }

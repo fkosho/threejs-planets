@@ -73,19 +73,27 @@ export default class Experience
 
     mouseOver()
     {
-        this.world.mouseOver()
+        // this.world.mouseOver()
     }
 
     click()
     {
         console.log('click')
 
-        this.world.changeFocus()
+        /**
+         * focus on clicked planet
+         */
+        // change focus target and gradually move camera per frame
+        this.camera.changeFocus()
+
+        // gradually reduce world's time speed to 0 per frame
+
+        // show planet's introduction text
     }
 
     update()
     {
-        // this.camera.update()
+        this.camera.updateFocus()
         this.world.update()
         this.renderer.update()
         this.raycaster.raycast()
@@ -118,7 +126,7 @@ export default class Experience
             }
         })
 
-        this.camera.controls.dispose()
+        // this.camera.controls.dispose()
         this.renderer.instance.dispose()
 
         if(this.debug.active)

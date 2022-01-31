@@ -11,6 +11,9 @@ export default class Camera
         this.scene = this.experience.scene
         this.canvas = this.experience.canvas
 
+        // Parameters
+        this.defaultPosition = new THREE.Vector3(18, 12, 24)
+
         this.setInstance()
         // this.setControls()
     }
@@ -19,7 +22,8 @@ export default class Camera
     {
         this.instance = new THREE.PerspectiveCamera(35, this.sizes.width / this.sizes.height, 0.1, 100)
         this.instance.position.set(18, 12, 24)
-        this.instance.lookAt(0, 0, 0)
+        this.currentLookAtPosition = new THREE.Vector3(0, 0, 0)
+        this.instance.lookAt(this.currentLookAtPosition)
         this.scene.add(this.instance)
     }
 
@@ -35,8 +39,45 @@ export default class Camera
         this.instance.updateProjectionMatrix()
     }
 
-    update()
+    updateFocus()
     {
-        this.controls.update()
+        // when click a planet object
+        if(this.target && this.target !== 'empty')
+        {
+            // move camera position
+            this.movedCameraPosition = new THREE.Vector3()
+            const distanceBetweenTargetAndCamera = new THREE.Vector3(10, 0, 0)
+
+            this.movedCameraPosition.addVectors(this.target.position, distanceBetweenTargetAndCamera)
+
+            this.instance.position.lerp(this.movedCameraPosition, 0.05)
+
+            // move focused position
+            this.currentLookAtPosition.lerp(this.target.position, 0.5)
+            this.instance.lookAt(this.currentLookAtPosition)
+            
+        }
+        // when click empty space
+        else if(this.target && this.target == 'empty')
+        {
+            // move camera position
+            this.instance.position.lerp(this.defaultPosition, 0.03)
+
+            // move focused position
+            const lookAtPosition = new THREE.Vector3(0, 0, 0)
+            this.instance.lookAt(this.currentLookAtPosition.lerp(lookAtPosition, 0.5))
+        }
+    }
+
+    changeFocus()
+    {
+        if(this.experience.raycaster.intersects.length)
+        {
+            this.target = this.experience.raycaster.intersects[0].object
+        }
+        else
+        {
+            this.target = 'empty'
+        }
     }
 }
