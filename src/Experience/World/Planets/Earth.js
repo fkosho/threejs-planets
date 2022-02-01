@@ -7,7 +7,7 @@ export default class Earth extends Planet
         super(radius, widthSegments, heightSegments, color, metalness, roughness, opacity, transparent)
         
         // Parameters
-        this.revolveRadius = 5
+        this.revolveRadius = 8
         this.revolveSpeed = 0.0008
     }
 }

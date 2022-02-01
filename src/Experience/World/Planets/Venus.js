@@ -7,7 +7,8 @@ export default class Venus extends Planet
         super(radius, widthSegments, heightSegments, color, metalness, roughness, opacity, transparent)
 
         // Parameters
-        this.revolveRadius = 3
+        this.name = "Venus"
+        this.revolveRadius = 4
         this.revolveSpeed = 0.001
     }
 }

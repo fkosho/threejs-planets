@@ -2,13 +2,13 @@ import * as THREE from 'three'
 import { SphereGeometry } from 'three'
 import Experience from '../../Experience'
 
-export default class Planet
+export default class Star
 {
     /**
-     * @param {number} radius planet radius.
+     * @param {number} radius star radius.
      * @param {number} widthSegments number of horizontal segments.
      * @param {number} heightSegments number of vertical segments.
-     * @param {number} color color of planet surface.
+     * @param {number} color color of star surface.
      * @param {number} metalness 
      * @param {number} roughness 
      * @param {number} opacity 

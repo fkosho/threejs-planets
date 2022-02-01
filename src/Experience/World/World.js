@@ -1,9 +1,7 @@
 import Experience from '../Experience.js'
 import Environment from './Environment.js'
-import Floor from './Floor.js'
-import Fox from './Fox.js'
+import Sun from './Stars/Sun.js'
 import Earth from './Planets/Earth.js'
-import Planet from './Planets/Planet.js'
 import Venus from './Planets/Venus.js'
 
 export default class World
@@ -15,15 +13,14 @@ export default class World
         this.resources = this.experience.resources
 
         // Set planet object
+        this.stars = {}
         this.planets = {}
 
         // Wait for resources
         this.resources.on('ready', () =>
         {
             // Setup
-            // this.floor = new Floor()
-            // this.fox = new Fox()
-            // this.earth = new Earth(1, 36, 36, 0x002266, 0.3, 0.1, 0.8, true)
+            this.stars.sun = new Sun()
             this.planets.earth = new Earth()
             this.planets.venus = new Venus()
             this.environment = new Environment()            
