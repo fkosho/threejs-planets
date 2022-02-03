@@ -59,6 +59,8 @@ export default class Raycaster extends EventEmitter
         })
         
         this.intersects = this.instance.intersectObjects(this.target)
+
+        // Intersect events
         if(this.intersects.length)
         {
             this.intersected = this.intersects[0].object
