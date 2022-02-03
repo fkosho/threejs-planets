@@ -8,7 +8,14 @@ import Resources from './Utils/Resources.js'
 import Debug from './Utils/Debug.js'
 import Raycaster from './Utils/Raycaster.js'
 import sources from './sources.js'
+import Status from './Status.js'
+import Stats from 'stats.js'
 
+
+// Monitor FPS
+const stats = new Stats()
+stats.showPanel(0)
+document.body.appendChild(stats.dom)
 
 let instance = null
 
@@ -35,6 +42,7 @@ export default class Experience
         this.time = new Time()
         this.scene = new THREE.Scene()
         this.resources = new Resources(sources)
+        this.status = new Status()
         this.camera = new Camera()
         this.renderer = new Renderer()
         this.world = new World()
@@ -52,6 +60,12 @@ export default class Experience
             this.mouseOver()
         })
 
+        // MouseOff event
+        this.raycaster.on('mouseoff', () =>
+        {
+            this.mouseOff()
+        })
+
         // Click event
         this.raycaster.on('click', () =>
         {
@@ -61,7 +75,9 @@ export default class Experience
         // Time tick event
         this.time.on('tick', () =>
         {
+            stats.begin()
             this.update()
+            stats.end()
         })
     }
 
@@ -73,7 +89,12 @@ export default class Experience
 
     mouseOver()
     {
-        // this.world.mouseOver()
+        this.world.select()
+    }
+
+    mouseOff()
+    {
+        this.world.unselect()
     }
 
     click()
@@ -84,7 +105,8 @@ export default class Experience
          * focus on clicked planet
          */
         // change focus target and gradually move camera per frame
-        this.camera.changeFocus()
+        // this.camera.changeFocus()
+        this.camera.changeFocus2()
 
         // gradually reduce world's time speed to 0 per frame
 
@@ -93,7 +115,8 @@ export default class Experience
 
     update()
     {
-        this.camera.updateFocus()
+        // this.camera.updateFocus()
+        this.camera.updateFocus2()
         this.world.update()
         this.renderer.update()
         this.raycaster.raycast()

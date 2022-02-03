@@ -10,6 +10,7 @@ export default class Camera
         this.sizes = this.experience.sizes
         this.scene = this.experience.scene
         this.canvas = this.experience.canvas
+        this.status = this.experience.status
 
         // Parameters
         this.defaultPosition = new THREE.Vector3(18, 12, 24)
@@ -39,6 +40,9 @@ export default class Camera
         this.instance.updateProjectionMatrix()
     }
 
+    /**
+     * Pattern 1: don't use Status Class
+     */
     updateFocus()
     {
         // when click a planet object
@@ -78,6 +82,53 @@ export default class Camera
         else
         {
             this.target = 'empty'
+        }
+    }
+
+    /**
+     * Pattern 2: use Status Class
+     */
+    updateFocus2()
+    {
+        // when click a planet object
+        if(this.status.focusTarget !== null && this.status.focusTarget !== null)
+        {
+            // move camera position
+            this.movedCameraPosition = new THREE.Vector3()
+            const distanceBetweenTargetAndCamera = new THREE.Vector3(10, 0, 0)
+
+            this.movedCameraPosition.addVectors(this.status.focusTarget.position, distanceBetweenTargetAndCamera)
+
+            this.instance.position.lerp(this.movedCameraPosition, 0.05)
+
+            // move focused position
+            this.currentLookAtPosition.lerp(this.status.focusTarget.position, 0.5)
+            this.instance.lookAt(this.currentLookAtPosition)
+            
+        }
+        // when click empty space
+        else if(this.status.focus == false)
+        {
+            // move camera position
+            this.instance.position.lerp(this.defaultPosition, 0.03)
+
+            // move focused position
+            const lookAtPosition = new THREE.Vector3(0, 0, 0)
+            this.instance.lookAt(this.currentLookAtPosition.lerp(lookAtPosition, 0.5))
+        }
+    }
+
+    changeFocus2()
+    {
+        if(this.experience.raycaster.intersects.length)
+        {
+            this.status.focusTarget = this.experience.raycaster.intersects[0].object
+            this.status.focus = true
+        }
+        else
+        {
+            this.status.focusTarget = null
+            this.status.focus = false
         }
     }
 }

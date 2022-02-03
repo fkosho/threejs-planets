@@ -39,10 +39,20 @@ export default class World
         }
     }
 
-    mouseOver()
-    { 
-        // add effect
-        this.selected = this.experience.raycaster.intersects[0].object
-        
+    select()
+    {
+        // only glows in overall view 
+        if(this.experience.status.focus == false)
+        {
+            this.experience.raycaster.intersected.material.emissive.setHex(0x070707)
+        }
+    }
+
+    unselect()
+    {
+        if(this.experience.raycaster.intersected)
+        {
+            this.experience.raycaster.intersected.material.emissive.setHex(0x000000)
+        }
     }
 }

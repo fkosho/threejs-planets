@@ -15,6 +15,8 @@ export default class Raycaster extends EventEmitter
         this.mouse = new THREE.Vector2()
         this.camera = this.experience.camera
 
+        this.intersected
+
         this.setInstance()
 
         /**
@@ -57,9 +59,17 @@ export default class Raycaster extends EventEmitter
         })
         
         this.intersects = this.instance.intersectObjects(this.target)
+
+        // Intersect events
         if(this.intersects.length)
         {
+            this.intersected = this.intersects[0].object
             this.trigger('mouseover')
+        }
+        else
+        {
+            this.trigger('mouseoff')
+            this.intersected = null
         }
     }
 }
