@@ -9,7 +9,13 @@ import Debug from './Utils/Debug.js'
 import Raycaster from './Utils/Raycaster.js'
 import sources from './sources.js'
 import Status from './Status.js'
+import Stats from 'stats.js'
 
+
+// Monitor FPS
+const stats = new Stats()
+stats.showPanel(0)
+document.body.appendChild(stats.dom)
 
 let instance = null
 
@@ -69,7 +75,9 @@ export default class Experience
         // Time tick event
         this.time.on('tick', () =>
         {
+            stats.begin()
             this.update()
+            stats.end()
         })
     }
 
