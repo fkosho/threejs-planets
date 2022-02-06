@@ -8,6 +8,6 @@ export default class Earth extends Planet
         
         // Parameters
         this.revolveRadius = 8
-        this.revolveSpeed = 0.0008
+        this.revolveSpeed = 0.0003
     }
 }
