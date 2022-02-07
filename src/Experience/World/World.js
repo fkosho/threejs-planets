@@ -3,6 +3,7 @@ import Environment from './Environment.js'
 import Sun from './Stars/Sun.js'
 import Earth from './Planets/Earth.js'
 import Venus from './Planets/Venus.js'
+import Points from './Effects/Points.js'
 
 export default class World
 {
@@ -23,20 +24,18 @@ export default class World
             this.stars.sun = new Sun()
             this.planets.earth = new Earth()
             this.planets.venus = new Venus()
-            this.environment = new Environment()            
+            this.environment = new Environment()
+            
+            this.experience.status.ready = true
+            this.points = new Points()
         })
     }
 
     update()
     {
-        if(this.planets.earth)
-        {
-            this.planets.earth.revolve()
-        }
-        if(this.planets.venus)
-        {
-            this.planets.venus.revolve()
-        }
+        this.planets.earth.revolve()
+        this.planets.venus.revolve()
+        this.points.updateScreenPosition()
     }
 
     select()

@@ -18,5 +18,8 @@ export default class Status extends EventEmitter
         // Select
         this.select = false // whether mouse exists on some object or not
         this.selectTarget = null
+
+        // Ready
+        this.ready = false
     }
 }

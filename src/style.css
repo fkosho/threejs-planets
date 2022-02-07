@@ -17,3 +17,49 @@ body
     left: 0;
     outline: none;
 }
+
+.point
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.point .object
+{
+    position: absolute;
+    top: -40px;
+    left: -40px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    /* border:  1px solid #ffffff77; */
+    color: #ffffff;
+    cursor: help;
+    /* transform: scale(0, 0); */
+    /* transition: transform 0.3s; */
+}
+.point:hover .text
+{
+    opacity: 1;
+}
+
+.point .text
+{
+    position: absolute;
+    top: 30px;
+    left: -120px;
+    width: 40px;
+    padding: 20px;
+    border-radius: 50%;
+    background: #00000077;
+    border: 1px solid #ffffff77;
+    color: #ffffff;
+    line-height: 1.3em;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 100;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}

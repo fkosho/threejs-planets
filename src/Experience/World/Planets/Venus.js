@@ -9,6 +9,6 @@ export default class Venus extends Planet
         // Parameters
         this.name = "Venus"
         this.revolveRadius = 4
-        this.revolveSpeed = 0.001
+        this.revolveSpeed = 0.0006
     }
 }

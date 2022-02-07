@@ -76,7 +76,10 @@ export default class Experience
         this.time.on('tick', () =>
         {
             stats.begin()
-            this.update()
+            if(this.status.ready)
+            {
+                this.update()
+            }
             stats.end()
         })
     }
@@ -106,7 +109,7 @@ export default class Experience
          */
         // change focus target and gradually move camera per frame
         // this.camera.changeFocus()
-        this.camera.changeFocus2()
+        this.camera.changeFocus()
 
         // gradually reduce world's time speed to 0 per frame
 
@@ -116,7 +119,7 @@ export default class Experience
     update()
     {
         // this.camera.updateFocus()
-        this.camera.updateFocus2()
+        this.camera.updateFocus()
         this.world.update()
         this.renderer.update()
         this.raycaster.raycast()

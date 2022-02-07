@@ -85,10 +85,7 @@ export default class Camera
         }
     }
 
-    /**
-     * Pattern 2: use Status Class
-     */
-    updateFocus2()
+    updateFocus()
     {
         // when click a planet object
         if(this.status.focusTarget !== null && this.status.focusTarget !== null)
@@ -118,7 +115,7 @@ export default class Camera
         }
     }
 
-    changeFocus2()
+    changeFocus()
     {
         if(this.experience.raycaster.intersects.length)
         {
