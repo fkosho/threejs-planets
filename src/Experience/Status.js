@@ -20,6 +20,6 @@ export default class Status extends EventEmitter
         this.selectTarget = null
 
         // Ready
-        this.ready = false
+        this.scemeReady = false
     }
 }

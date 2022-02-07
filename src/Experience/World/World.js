@@ -26,7 +26,7 @@ export default class World
             this.planets.venus = new Venus()
             this.environment = new Environment()
             
-            this.experience.status.ready = true
+            this.experience.status.scemeReady = true
             this.points = new Points()
         })
     }

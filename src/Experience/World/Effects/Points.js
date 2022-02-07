@@ -16,7 +16,7 @@ export default class Points
 
     setPoints()
     {
-        if(this.status.ready)
+        if(this.status.scemeReady)
         {
             this.points = [
                 {

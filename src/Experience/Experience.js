@@ -10,6 +10,7 @@ import Raycaster from './Utils/Raycaster.js'
 import sources from './sources.js'
 import Status from './Status.js'
 import Stats from 'stats.js'
+import OverlayBoard from './Effects/OverlayBoard.js'
 
 
 // Monitor FPS
@@ -41,6 +42,7 @@ export default class Experience
         this.sizes = new Sizes()
         this.time = new Time()
         this.scene = new THREE.Scene()
+        this.loadingEffect = new OverlayBoard()
         this.resources = new Resources(sources)
         this.status = new Status()
         this.camera = new Camera()
@@ -76,7 +78,7 @@ export default class Experience
         this.time.on('tick', () =>
         {
             stats.begin()
-            if(this.status.ready)
+            if(this.status.scemeReady)
             {
                 this.update()
             }

@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import Experience from '../Experience.js'
 import EventEmitter from './EventEmitter.js'
+import { gsap } from 'gsap'
 
 export default class Resources extends EventEmitter
 {
@@ -9,6 +11,10 @@ export default class Resources extends EventEmitter
         super()
 
         // Options
+        this.experience = new Experience()
+        this.scene = this.experience.scene
+        this.loadingEffect = this.experience.loadingEffect
+        this.loadingBarElement = document.querySelector('.loading-bar')
         this.sources = sources
 
         // Setup
@@ -16,6 +22,7 @@ export default class Resources extends EventEmitter
         this.toLoad = this.sources.length
         this.loaded = 0
 
+        this.setLoadingManager()
         this.setLoaders()
         this.startLoading()
     }
@@ -23,9 +30,43 @@ export default class Resources extends EventEmitter
     setLoaders()
     {
         this.loaders = {}
-        this.loaders.gltfLoader = new GLTFLoader()
-        this.loaders.textureLoader = new THREE.TextureLoader()
-        this.loaders.cubeTextureLoader = new THREE.CubeTextureLoader()
+        this.loaders.gltfLoader = new GLTFLoader(this.loadingManager)
+        this.loaders.textureLoader = new THREE.TextureLoader(this.loadingManager)
+        this.loaders.cubeTextureLoader = new THREE.CubeTextureLoader(this.loadingManager)
+    }
+
+    setLoadingManager()
+    {
+        this.loadingManager = new THREE.LoadingManager(
+            // Loaded
+            () =>
+            {
+                // Wait a little
+                window.setTimeout(() =>
+                {
+                    // Animate overlay
+                    gsap.to(
+                        this.loadingEffect.material.uniforms.uAlpha, 
+                        { 
+                            duration: 3, 
+                            value: 0,
+                            delay: 1
+                        }
+                    )
+
+                    // Update loadingBarElement
+                    this.loadingBarElement.classList.add('ended')
+                    this.loadingBarElement.style.transform = ''
+                }, 2000)
+            },
+            // Progress
+            (itemUrl, itemsLoaded, itemsTotal) =>
+            {
+                // Calculate the progress and update the loadingBarElement
+                this.progressRatio = itemsLoaded / itemsTotal
+                this.loadingBarElement.style.transform = `scaleX(${this.progressRatio})`
+            }
+        )
     }
 
     startLoading()
