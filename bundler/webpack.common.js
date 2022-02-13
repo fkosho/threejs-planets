@@ -4,7 +4,7 @@ const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
 const path = require('path')
 
 module.exports = {
-    entry: path.resolve(__dirname, '../src/script.js'),
+    entry: path.resolve(__dirname, '../src/script.ts'),
     output:
     {
         hashFunction: 'xxhash64',
@@ -12,6 +12,10 @@ module.exports = {
         path: path.resolve(__dirname, '../dist')
     },
     devtool: 'source-map',
+    resolve: 
+    {
+        extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
+    },
     plugins:
     [
         new CopyWebpackPlugin({
@@ -29,6 +33,12 @@ module.exports = {
     {
         rules:
         [
+            // TS
+            { 
+                test: /\.tsx?$/, 
+                use: "ts-loader" 
+            },
+
             // HTML
             {
                 test: /\.(html)$/,
@@ -44,8 +54,9 @@ module.exports = {
                 exclude: /node_modules/,
                 use:
                 [
+                    "source-map-loader" ,
                     'babel-loader'
-                ]
+                ],
             },
 
             // CSS
