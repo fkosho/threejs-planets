@@ -1,20 +1,29 @@
 import * as THREE from 'three'
 import { SphereGeometry } from 'three'
 import Experience from '../../Experience'
+import Time from '../../Utils/Time';
 
 export default class Planet
 {
     /**
-     * @param {number} radius planet radius.
-     * @param {number} widthSegments number of horizontal segments.
-     * @param {number} heightSegments number of vertical segments.
-     * @param {number} color color of planet surface.
-     * @param {number} metalness 
-     * @param {number} roughness 
-     * @param {number} opacity 
-     * @param {boolean} transparent 
+     * Definitions
      */
-    constructor(radius, widthSegments, heightSegments, color, metalness, roughness, opacity, transparent)
+    // Classes
+    experience: Experience;
+    scene: THREE.Scece;
+    time: Time;
+    geometry: THREE.BufferGeometry;
+    material: THREE.Material;
+    mesh: THREE.Mesh;
+
+    // Parameters
+    name: string;
+
+    // Parameters for functions
+    revolveRadius: number;
+    revolveSpeed: number;
+
+    constructor(radius: number, widthSegments: number, heightSegments: number, color: number, metalness: number, roughness: number, opacity: number, transparent: boolean)
     {
         this.experience = new Experience()
         this.scene = this.experience.scene
@@ -24,18 +33,14 @@ export default class Planet
         this.setGeometry(radius, widthSegments, heightSegments)
         this.setMaterial(color, metalness, roughness, opacity, transparent)
         this.setMesh()
-
-        // Parameters
-        this.revolveRadius = 0
-        this.revolveSpeed = 0
     }
 
-    setGeometry(radius, widthSegments, heightSegments)
+    setGeometry(radius: number, widthSegments: number, heightSegments: number)
     {
         this.geometry = new SphereGeometry(radius, widthSegments, heightSegments)
     }
 
-    setMaterial(color, metalness, roughness, opacity, transparent)
+    setMaterial(color: THREE.Color, metalness: number, roughness: number, opacity: number, transparent: boolean)
     {
         this.material = new THREE.MeshStandardMaterial({
             color: color,

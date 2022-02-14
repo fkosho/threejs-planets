@@ -1,8 +1,19 @@
 import * as THREE from 'three'
+import Camera from '../../Camera';
 import Experience from "../../Experience";
+import Status from '../../Status';
+import Sizes from '../../Utils/Sizes';
+import Point from './Point';
 
 export default class Points
 {
+    experience: Experience;
+    camera: Camera;
+    sizes: Sizes;
+    status: Status;
+
+    points: Array<Point>;
+
     constructor()
     {
         this.experience = new Experience()
@@ -18,24 +29,27 @@ export default class Points
     {
         if(this.status.scemeReady)
         {
-            this.points = [
-                {
-                    position: this.experience.world.stars.sun.mesh.position,
-                    element: document.querySelector('.sun')
-                },
-                {
-                    position: this.experience.world.planets.earth.mesh.position,
-                    element: document.querySelector('.earth')
-                },
-                {
-                    position: this.experience.world.planets.venus.mesh.position,
-                    element: document.querySelector('.venus')
-                }
-            ]                
+            this.points = new Array()
+
+            // Stars
+            for(const star of this.experience.world.stars)
+            {
+                const name = star.name.toLowerCase()
+                const newPoint = new Point(star.mesh.position, name)
+                this.points.push(newPoint)
+            }
+
+            // Planets
+            for(const planet of this.experience.world.planets)
+            {
+                const name = planet.name.toLowerCase()
+                const newPoint = new Point(planet.mesh.position, name)
+                this.points.push(newPoint)
+            }
         }
     }
 
-    updateScreenPosition() // todo: change name
+    updateScreenPosition()
     {
         for(const point of this.points)
         {
@@ -49,3 +63,4 @@ export default class Points
         }
     }
 }
+

@@ -1,20 +1,21 @@
 import * as THREE from 'three'
 import { SphereGeometry } from 'three'
 import Experience from '../../Experience'
+import Time from '../../Utils/Time'
 
 export default class Star
 {
-    /**
-     * @param {number} radius star radius.
-     * @param {number} widthSegments number of horizontal segments.
-     * @param {number} heightSegments number of vertical segments.
-     * @param {number} color color of star surface.
-     * @param {number} metalness 
-     * @param {number} roughness 
-     * @param {number} opacity 
-     * @param {boolean} transparent 
-     */
-    constructor(radius, widthSegments, heightSegments, color, metalness, roughness, opacity, transparent)
+    experience: Experience
+    scene: THREE.Scece
+    time: Time
+    geometry: THREE.BufferGeometry
+    material: THREE.Material
+    mesh: THREE.Mesh
+
+    // Parameters
+    name: string
+
+    constructor(radius: number, widthSegments: number, heightSegments: number, color: number, metalness: number, roughness: number, opacity: number, transparent: boolean)
     {
         this.experience = new Experience()
         this.scene = this.experience.scene
@@ -24,18 +25,14 @@ export default class Star
         this.setGeometry(radius, widthSegments, heightSegments)
         this.setMaterial(color, metalness, roughness, opacity, transparent)
         this.setMesh()
-
-        // Parameters
-        this.revolveRadius = 0
-        this.revolveSpeed = 0
     }
 
-    setGeometry(radius, widthSegments, heightSegments)
+    setGeometry(radius: number, widthSegments: number, heightSegments: number)
     {
         this.geometry = new SphereGeometry(radius, widthSegments, heightSegments)
     }
 
-    setMaterial(color, metalness, roughness, opacity, transparent)
+    setMaterial(color: THREE.Color, metalness: number, roughness: number, opacity: number, transparent: boolean)
     {
         this.material = new THREE.MeshStandardMaterial({
             color: color,
@@ -50,11 +47,5 @@ export default class Star
     {
         this.mesh = new THREE.Mesh(this.geometry, this.material)
         this.scene.add(this.mesh)
-    }
-
-    revolve()
-    {
-        this.mesh.position.x = Math.cos(this.time.elapsed * this.revolveSpeed) * this.revolveRadius
-        this.mesh.position.z = - Math.sin(this.time.elapsed * this.revolveSpeed) * this.revolveRadius
     }
 }

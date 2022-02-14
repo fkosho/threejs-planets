@@ -1,4 +1,4 @@
-import Planet from './Planet.js'
+import Planet from './Planet'
 
 export default class Venus extends Planet
 {
@@ -6,7 +6,7 @@ export default class Venus extends Planet
     {
         super(radius, widthSegments, heightSegments, color, metalness, roughness, opacity, transparent)
 
-        // Parameters
+        // Set parameters
         this.name = "Venus"
         this.revolveRadius = 4
         this.revolveSpeed = 0.0006

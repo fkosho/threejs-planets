@@ -1,29 +1,47 @@
-import Experience from '../Experience.js'
-import Environment from './Environment.js'
-import Sun from './Stars/Sun.js'
-import Earth from './Planets/Earth.js'
-import Venus from './Planets/Venus.js'
-import Points from './Effects/Points.js'
+import * as THREE from 'three'
+import Experience from '../Experience'
+import Environment from './Environment'
+import Resources from '../Utils/Resources'
+import Star from './Stars/Star'
+import Sun from './Stars/Sun'
+import Earth from './Planets/Earth'
+import Venus from './Planets/Venus'
+import Points from './Effects/Points'
+import Planet from './Planets/Planet'
 
 export default class World
 {
+    // Set up
+    experience: Experience;
+    resources: Resources;
+    environment: Environment;
+    scene: THREE.Scece;
+
+    // Objects
+    stars: Array<Star>;
+    planets: Array<Planet>;
+
+    // UI
+    points: Points;
+
+    // Effects
+
     constructor()
     {
         this.experience = new Experience()
         this.scene = this.experience.scene
         this.resources = this.experience.resources
 
-        // Set planet object
-        this.stars = {}
-        this.planets = {}
-
         // Wait for resources
         this.resources.on('ready', () =>
         {
             // Setup
-            this.stars.sun = new Sun()
-            this.planets.earth = new Earth()
-            this.planets.venus = new Venus()
+            this.stars = new Array()
+            this.planets = new Array() // Is this legal grammar?
+
+            this.stars.push(new Sun())
+            this.planets.push(new Earth())
+            this.planets.push(new Venus())
             this.environment = new Environment()
             
             this.experience.status.scemeReady = true
@@ -33,8 +51,9 @@ export default class World
 
     update()
     {
-        this.planets.earth.revolve()
-        this.planets.venus.revolve()
+        for(const planet of this.planets) {
+            planet.revolve()
+        }
         this.points.updateScreenPosition()
     }
 
