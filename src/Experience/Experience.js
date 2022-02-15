@@ -78,7 +78,7 @@ export default class Experience
         this.time.on('tick', () =>
         {
             stats.begin()
-            if(this.status.scemeReady)
+            if(this.status.sceneReady)
             {
                 this.update()
             }

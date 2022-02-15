@@ -87,8 +87,10 @@ export default class Camera
 
     changeFocus()
     {
-        if(this.experience.raycaster.intersects.length)
+        const intersects = this.experience.raycaster.intersects
+        if(intersects.length >= 1)
         {
+            console.log(this.experience.raycaster)
             this.status.focusTarget = this.experience.raycaster.intersects[0].object
             this.status.focus = true
         }

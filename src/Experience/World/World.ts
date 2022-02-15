@@ -44,7 +44,7 @@ export default class World
             this.planets.push(new Venus())
             this.environment = new Environment()
             
-            this.experience.status.scemeReady = true
+            this.experience.status.sceneReady = true
             this.points = new Points()
         })
     }

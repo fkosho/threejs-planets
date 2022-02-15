@@ -1,4 +1,3 @@
-import * as THREE from 'three'
 import Camera from '../../Camera';
 import Experience from "../../Experience";
 import Status from '../../Status';
@@ -27,7 +26,7 @@ export default class Points
 
     setPoints()
     {
-        if(this.status.scemeReady)
+        if(this.status.sceneReady)
         {
             this.points = new Array()
 
