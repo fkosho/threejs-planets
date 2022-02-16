@@ -3,7 +3,7 @@ export default [
      * Environment
      */
     {
-        name: 'sampleEnvironmentMapTexture',
+        name: 'environmentMapTexture',
         type: 'cubeTexture',
         path: 
         [

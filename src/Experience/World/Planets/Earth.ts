@@ -1,4 +1,4 @@
-import Planet from './Planet.js'
+import Planet from './Planet'
 
 export default class Earth extends Planet
 {
@@ -6,8 +6,11 @@ export default class Earth extends Planet
     {
         super(radius, widthSegments, heightSegments, color, metalness, roughness, opacity, transparent)
         
-        // Parameters
+        // Set parameters
+        this.name = 'Earth'
         this.revolveRadius = 8
         this.revolveSpeed = 0.0003
+
+        this.mesh.name = this.name
     }
 }

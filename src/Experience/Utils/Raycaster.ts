@@ -1,9 +1,30 @@
 import * as THREE from 'three'
 import EventEmitter from './EventEmitter'
 import Experience from '../Experience'
+import Sizes from './Sizes'
+import Camera from '../Camera'
 
 export default class Raycaster extends EventEmitter
 {
+    experience: Experience
+    scene: THREE.Scece
+    sizes: Sizes
+    mouse: THREE.Vector2
+    camera: Camera
+
+    instance: THREE.Raycaster
+
+    target: THREE.Mesh
+    intersects: [{
+        distance: number,
+        face: {},
+        faceIntex: number,
+        object: THREE.Mesh,
+        point: THREE.Vector3,
+        uv: THREE.Vector2,
+    }]
+    intersected: THREE.Mesh
+
     constructor()
     {
         super()

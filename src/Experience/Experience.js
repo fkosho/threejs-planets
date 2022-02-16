@@ -1,16 +1,16 @@
 import * as THREE from 'three'
-import World from './World/World.js'
-import Camera from './Camera.js'
-import Renderer from './Renderer.js'
-import Sizes from './Utils/Sizes.js'
-import Time from './Utils/Time.js'
-import Resources from './Utils/Resources.js'
-import Debug from './Utils/Debug.js'
-import Raycaster from './Utils/Raycaster.js'
-import sources from './sources.js'
-import Status from './Status.js'
+import World from './World/World'
+import Camera from './Camera'
+import Renderer from './Renderer'
+import Sizes from './Utils/Sizes'
+import Time from './Utils/Time'
+import Resources from './Utils/Resources'
+import Debug from './Utils/Debug'
+import Raycaster from './Utils/Raycaster'
+import sources from './sources'
+import Status from './Status'
 import Stats from 'stats.js'
-import OverlayBoard from './Effects/OverlayBoard.js'
+import OverlayBoard from './Effects/OverlayBoard'
 
 
 // Monitor FPS
@@ -78,7 +78,7 @@ export default class Experience
         this.time.on('tick', () =>
         {
             stats.begin()
-            if(this.status.scemeReady)
+            if(this.status.sceneReady)
             {
                 this.update()
             }
@@ -104,15 +104,12 @@ export default class Experience
 
     click()
     {
-        console.log('click')
-
         /**
          * focus on clicked planet
          */
         // change focus target and gradually move camera per frame
         // this.camera.changeFocus()
         this.camera.changeFocus()
-
         // gradually reduce world's time speed to 0 per frame
 
         // show planet's introduction text

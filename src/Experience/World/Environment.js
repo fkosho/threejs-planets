@@ -1,8 +1,11 @@
 import * as THREE from 'three'
 import Experience from '../Experience'
+import Debug from '../Utils/Debug';
+import Resources from '../Utils/Resources';
+import EnvironmentMap from './EnvironmentMap';
 
 export default class Environment
-{
+{   
     constructor()
     {
         this.experience = new Experience()
@@ -10,11 +13,11 @@ export default class Environment
         this.resources = this.experience.resources
         this.debug = this.experience.debug
 
-        // Debug
-        if(this.debug.active)
-        {
-            this.debugFolder = this.debug.ui.addFolder('environment')
-        }
+        // // Debug
+        // if(this.debug.active)
+        // {
+        //     this.debugFolder = this.debug.ui.addFolder('environment')
+        // }
 
         // Setup
         this.setSunLight()
@@ -31,45 +34,43 @@ export default class Environment
         this.sunLight.position.set(3, 3, - 2.25)
         this.scene.add(this.sunLight)
 
-        // Debug
-        if(this.debug.active)
-        {
-            this.debugFolder
-                .add(this.sunLight, 'intensity')
-                .name('sunLightIntensity')
-                .min(0)
-                .max(10)
-                .step(0.001)
+        // // Debug
+        // if(this.debug.active)
+        // {
+        //     this.debugFolder
+        //         .add(this.sunLight, 'intensity')
+        //         .name('sunLightIntensity')
+        //         .min(0)
+        //         .max(10)
+        //         .step(0.001)
 
-            this.debugFolder
-                .add(this.sunLight.position, 'x')
-                .name('sunLightX')
-                .min(- 5)
-                .max(5)
-                .step(0.001)
+        //     this.debugFolder
+        //         .add(this.sunLight.position, 'x')
+        //         .name('sunLightX')
+        //         .min(- 5)
+        //         .max(5)
+        //         .step(0.001)
 
-            this.debugFolder
-                .add(this.sunLight.position, 'y')
-                .name('sunLightY')
-                .min(- 5)
-                .max(5)
-                .step(0.001)
+        //     this.debugFolder
+        //         .add(this.sunLight.position, 'y')
+        //         .name('sunLightY')
+        //         .min(- 5)
+        //         .max(5)
+        //         .step(0.001)
 
-            this.debugFolder
-                .add(this.sunLight.position, 'z')
-                .name('sunLightZ')
-                .min(-5)
-                .max(5)
-                .step(0.001)
-        }
+        //     this.debugFolder
+        //         .add(this.sunLight.position, 'z')
+        //         .name('sunLightZ')
+        //         .min(-5)
+        //         .max(5)
+        //         .step(0.001)
+        // }
     }
 
     setEnvironmentMap()
     {
-        this.environmentMap = {}
-        this.environmentMap.intensity = 0.4
-        this.environmentMap.texture = this.resources.items.sampleEnvironmentMapTexture // the last property name(this.resources.items.xxxx) corresponds to the source name.
-        this.environmentMap.texture.encoding = THREE.sRGBEncoding
+        const texture = this.resources.items.environmentMapTexture
+        this.environmentMap = new EnvironmentMap(0.4, texture)
 
         this.scene.environment = this.environmentMap.texture
         this.scene.background = this.environmentMap.texture
@@ -88,16 +89,16 @@ export default class Environment
         }
         this.environmentMap.updateMaterials()
 
-        // Debug
-        if(this.debug.active)
-        {
-            this.debugFolder
-                .add(this.environmentMap, 'intensity')
-                .name('envMapIntensity')
-                .min(0)
-                .max(4)
-                .step(0.001)
-                .onChange(this.environmentMap.updateMaterials)
-        }
+        // // Debug
+        // if(this.debug.active)
+        // {
+        //     this.debugFolder
+        //         .add(this.environmentMap, 'intensity')
+        //         .name('envMapIntensity')
+        //         .min(0)
+        //         .max(4)
+        //         .step(0.001)
+        //         .onChange(this.environmentMap.updateMaterials)
+        // }
     }
 }

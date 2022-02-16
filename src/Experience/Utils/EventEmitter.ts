@@ -1,5 +1,7 @@
 export default class EventEmitter
 {
+    callbacks: any
+
     constructor()
     {
         this.callbacks = {}
@@ -104,7 +106,7 @@ export default class EventEmitter
         return this
     }
 
-    trigger(_name, _args)
+    trigger(_name, _args?)
     {
         // Errors
         if(typeof _name === 'undefined' || _name === '')
@@ -179,7 +181,11 @@ export default class EventEmitter
 
     resolveName(name)
     {
-        const newName = {}
+        const newName = {
+            original: null,
+            value: null,
+            namespace: null
+        }
         const parts = name.split('.')
 
         newName.original  = name

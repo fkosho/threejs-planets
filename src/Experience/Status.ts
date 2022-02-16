@@ -1,8 +1,17 @@
+import * as THREE from 'three'
 import Experience from './Experience'
 import EventEmitter from './Utils/EventEmitter'
 
 export default class Status extends EventEmitter
 {
+    experience: Experience
+    scene: THREE.Scece
+    focus: boolean
+    focusTarget: THREE.Mesh
+    select: boolean
+    selectTarget: THREE.Mesh
+    sceneReady: boolean
+
     constructor()
     {
         super()
@@ -20,6 +29,6 @@ export default class Status extends EventEmitter
         this.selectTarget = null
 
         // Ready
-        this.scemeReady = false
+        this.sceneReady = false
     }
 }

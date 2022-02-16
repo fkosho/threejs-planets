@@ -1,11 +1,32 @@
 import * as THREE from 'three'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import Experience from '../Experience.js'
-import EventEmitter from './EventEmitter.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import Experience from '../Experience'
+import EventEmitter from './EventEmitter'
 import { gsap } from 'gsap'
+import OverlayBoard from '../Effects/OverlayBoard'
 
 export default class Resources extends EventEmitter
 {
+    experience: Experience
+    scene: THREE.Scece
+    loadingEffect: OverlayBoard
+    loadingBarElement: HTMLElement
+    sources: [{
+        name: string,
+        type: string,
+        path: Array<string>
+    }]
+    items: {}
+    toLoad: number
+    loaded: number
+    loaders: {
+        gltfLoader: GLTFLoader,
+        textureLoader: THREE.TextureLoader,
+        cubeTextureLoader: THREE.CubeTextureLoader
+    }
+    loadingManager: THREE.LoadingManager
+    progressRatio: number
+
     constructor(sources)
     {
         super()
@@ -29,7 +50,11 @@ export default class Resources extends EventEmitter
 
     setLoaders()
     {
-        this.loaders = {}
+        this.loaders = {
+            gltfLoader: GLTFLoader,
+            textureLoader: THREE.TextureLoader,
+            cubeTextureLoader: THREE.CubeTextureLoader
+        }
         this.loaders.gltfLoader = new GLTFLoader(this.loadingManager)
         this.loaders.textureLoader = new THREE.TextureLoader(this.loadingManager)
         this.loaders.cubeTextureLoader = new THREE.CubeTextureLoader(this.loadingManager)

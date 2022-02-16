@@ -1,9 +1,25 @@
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import Experience from "./Experience";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import Experience from "./Experience"
+import Sizes from './Utils/Sizes'
+import Status from './Status'
 
 export default class Camera
 {
+    experience: Experience
+    canvas: HTMLElement
+    sizes: Sizes
+    scene: THREE.Scece
+    status: Status
+
+    target: THREE.Mesh
+    defaultPosition: THREE.Vector3
+    currentLookAtPosition: THREE.Vector3
+    movedCameraPosition: THREE.Vector3
+
+    instance: THREE.PerspectiveCamera
+    controls: OrbitControls
+
     constructor()
     {
         this.experience = new Experience()
@@ -16,7 +32,6 @@ export default class Camera
         this.defaultPosition = new THREE.Vector3(18, 12, 24)
 
         this.setInstance()
-        // this.setControls()
     }
 
     setInstance()
@@ -38,51 +53,6 @@ export default class Camera
     {
         this.instance.aspect = this.sizes.width / this.sizes.height
         this.instance.updateProjectionMatrix()
-    }
-
-    /**
-     * Pattern 1: don't use Status Class
-     */
-    updateFocus()
-    {
-        // when click a planet object
-        if(this.target && this.target !== 'empty')
-        {
-            // move camera position
-            this.movedCameraPosition = new THREE.Vector3()
-            const distanceBetweenTargetAndCamera = new THREE.Vector3(10, 0, 0)
-
-            this.movedCameraPosition.addVectors(this.target.position, distanceBetweenTargetAndCamera)
-
-            this.instance.position.lerp(this.movedCameraPosition, 0.05)
-
-            // move focused position
-            this.currentLookAtPosition.lerp(this.target.position, 0.5)
-            this.instance.lookAt(this.currentLookAtPosition)
-            
-        }
-        // when click empty space
-        else if(this.target && this.target == 'empty')
-        {
-            // move camera position
-            this.instance.position.lerp(this.defaultPosition, 0.03)
-
-            // move focused position
-            const lookAtPosition = new THREE.Vector3(0, 0, 0)
-            this.instance.lookAt(this.currentLookAtPosition.lerp(lookAtPosition, 0.5))
-        }
-    }
-
-    changeFocus()
-    {
-        if(this.experience.raycaster.intersects.length)
-        {
-            this.target = this.experience.raycaster.intersects[0].object
-        }
-        else
-        {
-            this.target = 'empty'
-        }
     }
 
     updateFocus()
@@ -117,15 +87,42 @@ export default class Camera
 
     changeFocus()
     {
-        if(this.experience.raycaster.intersects.length)
+        const intersects = this.experience.raycaster.intersects
+
+        if(intersects.length)
         {
+            // clicked invisible mesh during focusing other mesh
+            if(this.experience.raycaster.intersects[0].object.visible === false)
+            {
+                return
+            }
             this.status.focusTarget = this.experience.raycaster.intersects[0].object
             this.status.focus = true
+            
+            // disable to click other meshes
+            this.scene.traverse((child) =>
+            {
+                if(child instanceof THREE.Mesh && child != this.status.focusTarget)
+                {
+                    child.visible = false
+                }
+            })
+
+            console.log('nomal')
         }
         else
         {
             this.status.focusTarget = null
             this.status.focus = false
+
+            // enable to click meshes
+            this.scene.traverse((child) =>
+            {
+                if(child instanceof THREE.Mesh && child != this.status.focusTarget)
+                {
+                    child.visible = true
+                }
+            })
         }
     }
 }
