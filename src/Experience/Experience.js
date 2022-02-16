@@ -104,15 +104,12 @@ export default class Experience
 
     click()
     {
-        console.log('click')
-
         /**
          * focus on clicked planet
          */
         // change focus target and gradually move camera per frame
         // this.camera.changeFocus()
         this.camera.changeFocus()
-
         // gradually reduce world's time speed to 0 per frame
 
         // show planet's introduction text

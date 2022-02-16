@@ -7,5 +7,7 @@ export default class Sun extends Star
         super(radius, widthSegments, heightSegments, color, metalness, roughness, opacity, transparent)
 
         this.name = "Sun"
+
+        this.mesh.name = this.name
     }
 }

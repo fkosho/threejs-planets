@@ -10,5 +10,7 @@ export default class Earth extends Planet
         this.name = 'Earth'
         this.revolveRadius = 8
         this.revolveSpeed = 0.0003
+
+        this.mesh.name = this.name
     }
 }

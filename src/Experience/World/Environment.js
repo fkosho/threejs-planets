@@ -5,16 +5,7 @@ import Resources from '../Utils/Resources';
 import EnvironmentMap from './EnvironmentMap';
 
 export default class Environment
-{
-    experience: Experience
-    scene: THREE.Scece
-    resources: Resources
-    debug: Debug
-
-    sunLight: THREE.DirectionalLight
-    environmentMap: THREE.EnvironmentMap
-
-    
+{   
     constructor()
     {
         this.experience = new Experience()
@@ -78,7 +69,7 @@ export default class Environment
 
     setEnvironmentMap()
     {
-        const texture = this.resources.items.sampleEnvironmentMapTexture
+        const texture = this.resources.items.environmentMapTexture
         this.environmentMap = new EnvironmentMap(0.4, texture)
 
         this.scene.environment = this.environmentMap.texture

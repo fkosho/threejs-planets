@@ -10,5 +10,7 @@ export default class Venus extends Planet
         this.name = "Venus"
         this.revolveRadius = 4
         this.revolveSpeed = 0.0006
+
+        this.mesh.name = this.name
     }
 }

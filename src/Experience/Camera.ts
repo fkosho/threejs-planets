@@ -88,16 +88,41 @@ export default class Camera
     changeFocus()
     {
         const intersects = this.experience.raycaster.intersects
-        if(intersects.length >= 1)
+
+        if(intersects.length)
         {
-            console.log(this.experience.raycaster)
+            // clicked invisible mesh during focusing other mesh
+            if(this.experience.raycaster.intersects[0].object.visible === false)
+            {
+                return
+            }
             this.status.focusTarget = this.experience.raycaster.intersects[0].object
             this.status.focus = true
+            
+            // disable to click other meshes
+            this.scene.traverse((child) =>
+            {
+                if(child instanceof THREE.Mesh && child != this.status.focusTarget)
+                {
+                    child.visible = false
+                }
+            })
+
+            console.log('nomal')
         }
         else
         {
             this.status.focusTarget = null
             this.status.focus = false
+
+            // enable to click meshes
+            this.scene.traverse((child) =>
+            {
+                if(child instanceof THREE.Mesh && child != this.status.focusTarget)
+                {
+                    child.visible = true
+                }
+            })
         }
     }
 }
