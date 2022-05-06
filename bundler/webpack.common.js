@@ -4,7 +4,7 @@ const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
 const path = require('path')
 
 module.exports = {
-    entry: path.resolve(__dirname, '../src/script.js'),
+    entry: path.resolve(__dirname, '../src/script.tsx'),
     output:
     {
         hashFunction: 'xxhash64',
@@ -40,11 +40,21 @@ module.exports = {
 
             // JS
             {
-                test: /\.js$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use:
                 [
-                    'babel-loader'
+                    'babel-loader',
+                ]
+            },
+
+            // TS
+            {
+                test: /\.(ts|tsx)$/,
+                exclude: /node_modules/,
+                use:
+                [
+                    'ts-loader'
                 ]
             },
 
@@ -87,5 +97,8 @@ module.exports = {
                 ]
             }
         ]
+    },
+    resolve: {
+        extensions: [ '.ts', '.tsx', '.js', '.jsx', '.json']
     }
 }
