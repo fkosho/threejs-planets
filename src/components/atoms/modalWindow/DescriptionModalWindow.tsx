@@ -1,4 +1,11 @@
-export const DescriptionModalWindow = () => {
+type Props = {
+    onClick: () => void
+}
+
+export const DescriptionModalWindow = (props: Props) => {
+    const { onClick } = props
+
+
     return (
         <div 
             className="discription_modal" 
@@ -8,7 +15,8 @@ export const DescriptionModalWindow = () => {
                 backgroundColor: '#ffffff',
                 opacity: '60%',
                 borderRadius: '10px'
-            }} 
+            }}
+            onClick={onClick}
         />
     )
 }
