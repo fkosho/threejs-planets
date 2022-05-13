@@ -1,15 +1,12 @@
-import { DescriptionModalWindow } from './components/atoms/modalWindow/DescriptionModalWindow'
-import { Canvas } from './ThreeComponents/Canvas/Canvas'
-
 export default function App() {
-    const onClickCube = () => {
-        console.log('clicked')
-    }
-    
     return (
-        <>
-            <Canvas />
-            <DescriptionModalWindow onClick={onClickCube} />
-        </>
+        <div 
+            style={{ 
+                color: 'white', 
+                zIndex: 3,
+                backgroundColor: 'blue',
+                width: '100px',
+                height: '100px'
+            }}>aaa{console.log('aaa')}</div>
     )
 }

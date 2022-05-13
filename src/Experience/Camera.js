@@ -1,131 +1,86 @@
 import * as THREE from 'three'
+import Experience from './Experience.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import Experience from "./Experience";
 
 export default class Camera
 {
-    constructor()
+    constructor(_options)
     {
+        // Options
         this.experience = new Experience()
+        this.config = this.experience.config
+        this.debug = this.experience.debug
+        this.time = this.experience.time
         this.sizes = this.experience.sizes
+        this.targetElement = this.experience.targetElement
         this.scene = this.experience.scene
-        this.canvas = this.experience.canvas
-        this.status = this.experience.status
 
-        // Parameters
-        this.defaultPosition = new THREE.Vector3(18, 12, 24)
+        // Set up
+        this.mode = 'debug' // defaultCamera \ debugCamera
 
         this.setInstance()
-        // this.setControls()
+        this.setModes()
     }
 
     setInstance()
     {
-        this.instance = new THREE.PerspectiveCamera(35, this.sizes.width / this.sizes.height, 0.1, 100)
-        this.instance.position.set(18, 12, 24)
-        this.currentLookAtPosition = new THREE.Vector3(0, 0, 0)
-        this.instance.lookAt(this.currentLookAtPosition)
+        // Set up
+        this.instance = new THREE.PerspectiveCamera(25, this.config.width / this.config.height, 0.1, 150)
+        this.instance.rotation.reorder('YXZ')
+
         this.scene.add(this.instance)
     }
 
-    setControls()
+    setModes()
     {
-        this.controls = new OrbitControls(this.instance, this.canvas)
-        this.controls.enableDamping = true
+        this.modes = {}
+
+        // Default
+        this.modes.default = {}
+        this.modes.default.instance = this.instance.clone()
+        this.modes.default.instance.rotation.reorder('YXZ')
+
+        // Debug
+        this.modes.debug = {}
+        this.modes.debug.instance = this.instance.clone()
+        this.modes.debug.instance.rotation.reorder('YXZ')
+        this.modes.debug.instance.position.set(5, 5, 5)
+        
+        this.modes.debug.orbitControls = new OrbitControls(this.modes.debug.instance, this.targetElement)
+        this.modes.debug.orbitControls.enabled = this.modes.debug.active
+        this.modes.debug.orbitControls.screenSpacePanning = true
+        this.modes.debug.orbitControls.enableKeys = false
+        this.modes.debug.orbitControls.zoomSpeed = 0.25
+        this.modes.debug.orbitControls.enableDamping = true
+        this.modes.debug.orbitControls.update()
     }
+
 
     resize()
     {
-        this.instance.aspect = this.sizes.width / this.sizes.height
+        this.instance.aspect = this.config.width / this.config.height
         this.instance.updateProjectionMatrix()
+
+        this.modes.default.instance.aspect = this.config.width / this.config.height
+        this.modes.default.instance.updateProjectionMatrix()
+
+        this.modes.debug.instance.aspect = this.config.width / this.config.height
+        this.modes.debug.instance.updateProjectionMatrix()
     }
 
-    /**
-     * Pattern 1: don't use Status Class
-     */
-    updateFocus()
+    update()
     {
-        // when click a planet object
-        if(this.target && this.target !== 'empty')
-        {
-            // move camera position
-            this.movedCameraPosition = new THREE.Vector3()
-            const distanceBetweenTargetAndCamera = new THREE.Vector3(10, 0, 0)
+        // Update debug orbit controls
+        this.modes.debug.orbitControls.update()
 
-            this.movedCameraPosition.addVectors(this.target.position, distanceBetweenTargetAndCamera)
-
-            this.instance.position.lerp(this.movedCameraPosition, 0.05)
-
-            // move focused position
-            this.currentLookAtPosition.lerp(this.target.position, 0.5)
-            this.instance.lookAt(this.currentLookAtPosition)
-            
-        }
-        // when click empty space
-        else if(this.target && this.target == 'empty')
-        {
-            // move camera position
-            this.instance.position.lerp(this.defaultPosition, 0.03)
-
-            // move focused position
-            const lookAtPosition = new THREE.Vector3(0, 0, 0)
-            this.instance.lookAt(this.currentLookAtPosition.lerp(lookAtPosition, 0.5))
-        }
+        // Apply coordinates
+        this.instance.position.copy(this.modes[this.mode].instance.position)
+        this.instance.quaternion.copy(this.modes[this.mode].instance.quaternion)
+        this.instance.updateMatrixWorld() // To be used in projection
     }
 
-    changeFocus()
+    destroy()
     {
-        if(this.experience.raycaster.intersects.length)
-        {
-            this.target = this.experience.raycaster.intersects[0].object
-        }
-        else
-        {
-            this.target = 'empty'
-        }
-    }
-
-    updateFocus()
-    {
-        // when click a planet object
-        if(this.status.focusTarget !== null && this.status.focusTarget !== null)
-        {
-            // move camera position
-            this.movedCameraPosition = new THREE.Vector3()
-            const distanceBetweenTargetAndCamera = new THREE.Vector3(10, 0, 0)
-
-            this.movedCameraPosition.addVectors(this.status.focusTarget.position, distanceBetweenTargetAndCamera)
-
-            this.instance.position.lerp(this.movedCameraPosition, 0.05)
-
-            // move focused position
-            this.currentLookAtPosition.lerp(this.status.focusTarget.position, 0.5)
-            this.instance.lookAt(this.currentLookAtPosition)
-            
-        }
-        // when click empty space
-        else if(this.status.focus == false)
-        {
-            // move camera position
-            this.instance.position.lerp(this.defaultPosition, 0.03)
-
-            // move focused position
-            const lookAtPosition = new THREE.Vector3(0, 0, 0)
-            this.instance.lookAt(this.currentLookAtPosition.lerp(lookAtPosition, 0.5))
-        }
-    }
-
-    changeFocus()
-    {
-        if(this.experience.raycaster.intersects.length)
-        {
-            this.status.focusTarget = this.experience.raycaster.intersects[0].object
-            this.status.focus = true
-        }
-        else
-        {
-            this.status.focusTarget = null
-            this.status.focus = false
-        }
+        this.modes.debug.orbitControls.destroy()
     }
 }

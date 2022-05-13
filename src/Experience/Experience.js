@@ -1,165 +1,157 @@
 import * as THREE from 'three'
-import World from './World/World.js'
-import Camera from './Camera.js'
-import Renderer from './Renderer.js'
-import Sizes from './Utils/Sizes.js'
+import GUI from 'lil-gui'
+
 import Time from './Utils/Time.js'
-import Resources from './Utils/Resources.js'
-import Debug from './Utils/Debug.js'
-import Raycaster from './Utils/Raycaster.js'
-import sources from './sources.js'
-import Status from './Status.js'
-import Stats from 'stats.js'
-import OverlayBoard from './Effects/OverlayBoard.js'
+import Sizes from './Utils/Sizes.js'
+import Stats from './Utils/Stats.js'
 
+import Resources from './Resources.js'
+import Renderer from './Renderer.js'
+import Camera from './Camera.js'
+import World from './World.js'
 
-// Monitor FPS
-const stats = new Stats()
-stats.showPanel(0)
-document.body.appendChild(stats.dom)
-
-let instance = null
+import assets from './assets.js'
 
 export default class Experience
 {
-    constructor(canvas)
-    {
-        // Singleton
-        if(instance)
-        {
-            return instance
-        }
-        instance = this
+    static instance
 
-        // Global access
-        window.experience = this
+    constructor(_options = {})
+    {
+        if(Experience.instance)
+        {
+            return Experience.instance
+        }
+        Experience.instance = this
 
         // Options
-        this.canvas = canvas
+        this.targetElement = _options.targetElement
 
-        // Setup
-        this.debug = new Debug()
-        this.sizes = new Sizes()
+        if(!this.targetElement)
+        {
+            console.warn('Missing \'targetElement\' property')
+            return
+        }
+
         this.time = new Time()
-        this.scene = new THREE.Scene()
-        this.loadingEffect = new OverlayBoard()
-        this.resources = new Resources(sources)
-        this.status = new Status()
-        this.camera = new Camera()
-        this.renderer = new Renderer()
-        this.world = new World()
-        this.raycaster = new Raycaster()
-
-        // Resize event
+        this.sizes = new Sizes()
+        this.setConfig()
+        this.setDebug()
+        this.setStats()
+        this.setScene()
+        this.setCamera()
+        this.setRenderer()
+        this.setResources()
+        this.setWorld()
+        
         this.sizes.on('resize', () =>
         {
             this.resize()
         })
 
-        // Mouseover event
-        this.raycaster.on('mouseover', () =>
-        {
-            this.mouseOver()
-        })
+        this.update()
+        console.log('sss')
+    }
 
-        // MouseOff event
-        this.raycaster.on('mouseoff', () =>
-        {
-            this.mouseOff()
-        })
+    setConfig()
+    {
+        this.config = {}
+    
+        // Debug
+        this.config.debug = window.location.hash === '#debug'
 
-        // Click event
-        this.raycaster.on('click', () =>
-        {
-            this.click()
-        })
+        // Pixel ratio
+        this.config.pixelRatio = Math.min(Math.max(window.devicePixelRatio, 1), 2)
 
-        // Time tick event
-        this.time.on('tick', () =>
+        // Width and height
+        const boundings = this.targetElement.getBoundingClientRect()
+        this.config.width = boundings.width
+        this.config.height = boundings.height || window.innerHeight
+    }
+
+    setDebug()
+    {
+        if(this.config.debug)
         {
-            stats.begin()
-            if(this.status.scemeReady)
-            {
-                this.update()
-            }
-            stats.end()
+            this.debug = new GUI()
+        }
+    }
+
+    setStats()
+    {
+        if(this.config.debug)
+        {
+            this.stats = new Stats(true)
+        }
+    }
+    
+    setScene()
+    {
+        this.scene = new THREE.Scene()
+    }
+
+    setCamera()
+    {
+        this.camera = new Camera()
+    }
+
+    setRenderer()
+    {
+        this.renderer = new Renderer({ rendererInstance: this.rendererInstance })
+
+        this.targetElement.appendChild(this.renderer.instance.domElement)
+    }
+
+    setResources()
+    {
+        this.resources = new Resources(assets)
+    }
+
+    setWorld()
+    {
+        this.world = new World()
+    }
+
+    update()
+    {
+        if(this.stats)
+            this.stats.update()
+        
+        this.camera.update()
+
+        if(this.world)
+            this.world.update()
+        
+        if(this.renderer)
+            this.renderer.update()
+
+        window.requestAnimationFrame(() =>
+        {
+            this.update()
         })
     }
 
     resize()
     {
-        this.camera.resize()
-        this.renderer.resize()
-    }
+        // Config
+        const boundings = this.targetElement.getBoundingClientRect()
+        this.config.width = boundings.width
+        this.config.height = boundings.height
 
-    mouseOver()
-    {
-        this.world.select()
-    }
+        this.config.pixelRatio = Math.min(Math.max(window.devicePixelRatio, 1), 2)
 
-    mouseOff()
-    {
-        this.world.unselect()
-    }
+        if(this.camera)
+            this.camera.resize()
 
-    click()
-    {
-        console.log('click')
+        if(this.renderer)
+            this.renderer.resize()
 
-        /**
-         * focus on clicked planet
-         */
-        // change focus target and gradually move camera per frame
-        // this.camera.changeFocus()
-        this.camera.changeFocus()
-
-        // gradually reduce world's time speed to 0 per frame
-
-        // show planet's introduction text
-    }
-
-    update()
-    {
-        // this.camera.updateFocus()
-        this.camera.updateFocus()
-        this.world.update()
-        this.renderer.update()
-        this.raycaster.raycast()
+        if(this.world)
+            this.world.resize()
     }
 
     destroy()
     {
-        this.sizes.off('resize')
-        this.time.off('tick')
-
-        // Traverse the whole scene
-        this.scene.traverse((child) => 
-        {
-            // Test if it's a mesh
-            if(child instanceof THREE.Mesh)
-            {
-                child.geometry.dispose()
-
-                // Loop through the material properties
-                for(const key in child.material)
-                {
-                    const value = child.material[key]
-
-                    // Test if there is a dispose function
-                    if(value && typeof value.dispose === 'function')
-                    {
-                        value.dispose()
-                    }
-                }
-            }
-        })
-
-        // this.camera.controls.dispose()
-        this.renderer.instance.dispose()
-
-        if(this.debug.active)
-        {
-            this.debug.ui.destroy
-        }
+        
     }
 }

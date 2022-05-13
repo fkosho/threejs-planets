@@ -1,9 +1,16 @@
-import { StrictMode } from "react";
+import './style.css'
+import { StrictMode } from 'react'
 import ReactDom from 'react-dom'
 
+import Experience from './Experience/Experience.js'
 import App from './App'
 
-const rootElement = document.getElementById('root')
+
+const experience = new Experience({
+    targetElement: document.querySelector('.experience')
+})
+
+const rootElement = document.getElementById('reactRoot')
 
 ReactDom.render(
     <StrictMode>
@@ -11,10 +18,3 @@ ReactDom.render(
     </StrictMode>,
     rootElement
 )
-
-
-
-// import './style.css'
-// import Experience from './Experience/Experience.js'
-
-// const experience = new Experience(document.querySelector('canvas.webgl'))
