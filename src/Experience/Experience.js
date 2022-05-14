@@ -50,7 +50,6 @@ export default class Experience
         })
 
         this.update()
-        console.log('sss')
     }
 
     setConfig()

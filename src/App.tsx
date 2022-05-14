@@ -1,12 +1,19 @@
+import { useEffect } from "react"
+import { useMoveCube } from "./hooks/use3dActions/useMoveCube"
+
 export default function App() {
+
     return (
         <div 
+            id='sample'
+            onClick={() => useMoveCube()}
             style={{ 
                 color: 'white', 
-                zIndex: 3,
-                backgroundColor: 'blue',
+                backgroundColor: '#345678',
                 width: '100px',
-                height: '100px'
-            }}>aaa{console.log('aaa')}</div>
+                height: '50px',
+                borderRadius: '30px'
+                
+            }}></div>
     )
 }

@@ -28,6 +28,8 @@ export default class World
             new THREE.MeshBasicMaterial({ map: this.resources.items.lennaTexture })
         )
         this.scene.add(cube)        
+        cube.position.set(1, 0, 0)
+
     }
 
     resize()
@@ -40,5 +42,10 @@ export default class World
 
     destroy()
     {
+    }
+
+    moveCube()
+    {
+        this.scene.children[1].position.x *= -1
     }
 }
