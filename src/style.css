@@ -16,9 +16,11 @@ body
     position: fixed;
     width: 100vw;
     height: 100vh;
+    z-index: 1;
 }
 
 #reactRoot
 {
-    position: fixed
+    position: fixed;
+    z-index: 2;
 }
