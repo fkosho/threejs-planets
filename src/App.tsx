@@ -2,6 +2,7 @@ import React, { useEffect } from "react"
 import { DescriptionModal } from "./components/molecules/DescriptionModal"
 import Experience from "./Experience/Experience"
 import { useMoveCube } from "./hooks/use3dActions/useMoveCube"
+import { useChangeColor } from "./hooks/useReactActions/useChangeColor"
 
 export const App: React.FC = () => {
 
@@ -37,9 +38,23 @@ export const App: React.FC = () => {
                     }}
                 >
                 </div>
+                <div
+                    id='color'
+                    onClick={(e) => useChangeColor(e)}
+                    style={{
+                        position: "absolute",
+                        color: 'white',
+                        backgroundColor: '#838ea5',
+                        width: '120px',
+                        height: '100px',
+                        borderRadius: '30px',
+                        zIndex: "2",
+                        bottom:0
+                    }}
+                >
+                </div>
                 <DescriptionModal />
             </div>
-
-        </>
+            </>
     )
 }
