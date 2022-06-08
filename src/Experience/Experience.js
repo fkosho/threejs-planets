@@ -12,6 +12,8 @@ import World from './World.js'
 
 import assets from './assets.js'
 
+import { useDisplayModal } from '../hooks/useReactActions/useDisplayModal'
+
 export default class Experience
 {
     static instance
@@ -128,6 +130,12 @@ export default class Experience
         {
             this.update()
         })
+
+        // console.log(this.time.elapsed)
+        if(this.time.elapsed % 30 === 0) {
+            
+            useDisplayModal()
+        }
     }
 
     resize()
