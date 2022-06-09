@@ -40,7 +40,7 @@ export const App: React.FC = () => {
                 </div>
                 <div
                     id='color'
-                    onClick={(e) => useChangeColor(e)}
+                    onClick={(e) => useChangeColor()}
                     style={{
                         position: "absolute",
                         color: 'white',

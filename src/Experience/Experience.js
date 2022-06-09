@@ -13,6 +13,7 @@ import World from './World.js'
 import assets from './assets.js'
 
 import { useDisplayModal } from '../hooks/useReactActions/useDisplayModal'
+import { useChangeColor } from '../hooks/useReactActions/useChangeColor'
 
 export default class Experience
 {
@@ -135,6 +136,14 @@ export default class Experience
         if(this.time.elapsed % 30 === 0) {
             
             useDisplayModal()
+        }
+
+        if(this.world.scene.children[1])
+        {
+            if(this.world.scene.children[1].position.x > 0)
+            {
+                useChangeColor()
+            }
         }
     }
 
