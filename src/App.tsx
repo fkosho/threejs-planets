@@ -1,60 +1,32 @@
-import React, { useEffect } from "react"
-import { DescriptionModal } from "./components/molecules/DescriptionModal"
-import Experience from "./Experience/Experience"
-import { useMoveCube } from "./hooks/use3dActions/useMoveCube"
-import { useChangeColor } from "./hooks/useReactActions/useChangeColor"
+import React from "react";
+import {
+  HashRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
+import { SampleFirst } from "./pages/SampleFirst";
+import { SampleSecond } from "./pages/SampleSecond";
+import { SampleThird } from "./pages/SampleThird";
 
 export const App: React.FC = () => {
-
-    useEffect(() => {
-        const experience = new Experience({
-            targetElement: document.getElementById("canvas")
-        })
-    }, [])
-
-    return (
-        <>
-            <div style={{ width: "1000px", height: "600px"}}>
-                <div
-                    id={"canvas"}
-                    style={{
-                        position: "absolute",
-                        width: "100%",
-                        height: "100%",
-                        zIndex: "1"
-                    }}
-                ></div>
-                <div
-                    id='sample'
-                    onClick={() => useMoveCube()}
-                    style={{
-                        position: "absolute",
-                        color: 'white',
-                        backgroundColor: '#345678',
-                        width: '120px',
-                        height: '100px',
-                        borderRadius: '30px',
-                        zIndex: "2"
-                    }}
-                >
-                </div>
-                <div
-                    id='color'
-                    onClick={(e) => useChangeColor()}
-                    style={{
-                        position: "absolute",
-                        color: 'white',
-                        backgroundColor: '#838ea5',
-                        width: '120px',
-                        height: '100px',
-                        borderRadius: '30px',
-                        zIndex: "2",
-                        bottom:0
-                    }}
-                >
-                </div>
-                <DescriptionModal />
-            </div>
-            </>
-    )
-}
+  return (
+    <>
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <SampleFirst />
+          </Route>
+          <Route exact path="/sample2">
+            <SampleSecond />
+          </Route>
+          {/* 既存と同じDOM取得方法 */}
+          <Route path="/sample3">
+            <SampleThird />
+          </Route>
+          <Redirect to="/" path="*" />
+        </Switch>
+      </Router>
+    </>
+  );
+};
